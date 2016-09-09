@@ -1,8 +1,33 @@
 package yrel
 
 import (
+	"bufio"
+	"fmt"
+	"os"
 	"strconv"
 )
+
+type Lexer struct {
+	Queue   []*Token
+	HasMore bool
+	Reader  *bufio.Reader
+}
+
+func NewLexer(file *os.File) *Lexer {
+	return &Lexer{
+		Queue:   []*Token{},
+		HasMore: true,
+		Reader:  bufio.NewReader(file),
+	}
+}
+
+func (l Lexer) Read() {
+	scanner := bufio.NewScanner(l.Reader)
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+}
 
 type Token interface {
 	IsNumber() bool
