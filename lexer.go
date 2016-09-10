@@ -7,6 +7,10 @@ import (
 	"strconv"
 )
 
+var numPattern = "[0-9]+"
+var idPattern = "[A-Z_a-z][A-Z_a-z0-9]*|==|<=|>=|&&||||\\p{Punct}"
+var strPattern = "(\\\"|\\\\\\|\\n|[^\"])"
+
 type Lexer struct {
 	Queue   []*Token
 	HasMore bool
@@ -52,7 +56,8 @@ func GetTokenType(t Token) string {
 }
 
 type NumToken struct {
-	Value int
+	LineNum int
+	Value   int
 }
 
 func (n NumToken) IsNumber() bool {
@@ -76,7 +81,8 @@ func (n NumToken) GetNumber() int {
 }
 
 type IdToken struct {
-	Text string
+	LineNum int
+	Text    string
 }
 
 func (i IdToken) IsNumber() bool {
@@ -96,6 +102,7 @@ func (i IdToken) GetText() string {
 }
 
 type StrToken struct {
+	LineNum int
 	Literal string
 }
 
