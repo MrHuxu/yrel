@@ -4,12 +4,15 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"regexp"
 	"strconv"
 )
 
-var numPattern = "[0-9]+"
-var idPattern = "[A-Z_a-z][A-Z_a-z0-9]*|==|<=|>=|&&||||\\p{Punct}"
-var strPattern = "(\\\"|\\\\\\|\\n|[^\"])"
+var idPattern = `([A-Z_a-z][A-Z_a-z0-9]*|=|!=|==|<=|>=|&&|\|\|)`
+var numPattern = `([0-9]+)`
+var strPattern = `(\"[\S\s]*\")`
+var commentPattern = `(//[\S\s]*)`
+var pattern = idPattern + "|" + numPattern + "|" + strPattern + "|" + commentPattern
 
 type Lexer struct {
 	Queue   []*Token
@@ -26,10 +29,11 @@ func NewLexer(file *os.File) *Lexer {
 }
 
 func (l Lexer) Read() {
+	matcher, _ := regexp.Compile(pattern)
 	scanner := bufio.NewScanner(l.Reader)
 	scanner.Split(bufio.ScanLines)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		fmt.Println(matcher.FindAllStringSubmatch(scanner.Text(), -1))
 	}
 }
 
