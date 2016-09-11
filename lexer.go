@@ -15,25 +15,41 @@ var commentPattern = `(//[\S\s]*)`
 var pattern = idPattern + "|" + numPattern + "|" + strPattern + "|" + commentPattern
 
 type Lexer struct {
-	Queue   []*Token
+	Queue   []Token
 	HasMore bool
 	Reader  *bufio.Reader
 }
 
 func NewLexer(file *os.File) *Lexer {
 	return &Lexer{
-		Queue:   []*Token{},
+		Queue:   []Token{},
 		HasMore: true,
 		Reader:  bufio.NewReader(file),
 	}
 }
 
-func (l Lexer) Read() {
+func (l *Lexer) Read() {
 	matcher, _ := regexp.Compile(pattern)
 	scanner := bufio.NewScanner(l.Reader)
 	scanner.Split(bufio.ScanLines)
+	count := 0
 	for scanner.Scan() {
-		fmt.Println(matcher.FindAllStringSubmatch(scanner.Text(), -1))
+		count++
+		l.addToken(count, matcher.FindAllStringSubmatch(scanner.Text(), -1))
+	}
+	fmt.Println(l.Queue)
+}
+
+func (l *Lexer) addToken(ln int, elements [][]string) {
+	for _, ele := range elements {
+		if ele[1] != "" {
+			l.Queue = append(l.Queue, &IdToken{ln, ele[0]})
+		} else if ele[2] != "" {
+			num, _ := strconv.Atoi(ele[0])
+			l.Queue = append(l.Queue, &NumToken{ln, num})
+		} else if ele[3] != "" {
+			l.Queue = append(l.Queue, &StrToken{ln, ele[0]})
+		}
 	}
 }
 
@@ -59,6 +75,27 @@ func GetTokenType(t Token) string {
 	return tokenType
 }
 
+type IdToken struct {
+	LineNum int
+	Text    string
+}
+
+func (i IdToken) IsNumber() bool {
+	return false
+}
+
+func (i IdToken) IsIdentifier() bool {
+	return true
+}
+
+func (i IdToken) IsString() bool {
+	return false
+}
+
+func (i IdToken) GetText() string {
+	return i.Text
+}
+
 type NumToken struct {
 	LineNum int
 	Value   int
@@ -82,27 +119,6 @@ func (n NumToken) GetText() string {
 
 func (n NumToken) GetNumber() int {
 	return n.Value
-}
-
-type IdToken struct {
-	LineNum int
-	Text    string
-}
-
-func (i IdToken) IsNumber() bool {
-	return false
-}
-
-func (i IdToken) IsIdentifier() bool {
-	return true
-}
-
-func (i IdToken) IsString() bool {
-	return false
-}
-
-func (i IdToken) GetText() string {
-	return i.Text
 }
 
 type StrToken struct {
