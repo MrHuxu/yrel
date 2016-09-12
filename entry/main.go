@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "fmt"
+	"fmt"
 	"github.com/MrHuxu/yrel"
 	"os"
 )
@@ -16,5 +16,8 @@ func main() {
 	file, err := os.Open("./test.yr")
 	check(err)
 	lexer := yrel.NewLexer(file)
-	lexer.Read()
+	fmt.Println(lexer)
+	fmt.Println(lexer.Read())
+	fmt.Println(lexer.Read())
+	fmt.Println(lexer.Read())
 }
