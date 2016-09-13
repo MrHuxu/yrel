@@ -1,0 +1,12 @@
+node_modules/
+server/public/components
+server/public/built
+.sass-cache
+log/
+server/public/imgs/.DS_Store
+npm-debug.log
+dump.rdb
+
+server/logfile.log
+server/built/
+server/main
