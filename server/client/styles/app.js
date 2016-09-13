@@ -13,7 +13,7 @@ export default {
   leftPanel : {
     position : 'fixed',
     display  : 'inline-block',
-    padding  : '10% 0 0 2%',
+    padding  : '7% 0 0 2%',
     height   : '100%',
     width    : '45%',
     fontSize : '20px',

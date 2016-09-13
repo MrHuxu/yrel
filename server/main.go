@@ -132,7 +132,7 @@ func replyPost(c *gin.Context, db *mgo.Database) {
 }
 
 func main() {
-	fmt.Println("==> 🌎  Listening on port 8081. Open up http://localhost:8081/ in your browser.")
+	fmt.Println("==> 🌎  Listening on port 8082. Open up http://localhost:8082/ in your browser.")
 
 	// setup database
 	session, err := mgo.Dial("127.0.0.1:27017")
