@@ -2,42 +2,43 @@ package yrel
 
 import (
 	"bufio"
-	"fmt"
+	_ "fmt"
 	"os"
 	"regexp"
 	"strconv"
 )
 
-var idPattern = `([A-Z_a-z][A-Z_a-z0-9]*|=|!=|==|<=|>=|&&|\|\|)`
-var numPattern = `([0-9]+)`
-var strPattern = `(\"[\S\s]*\")`
-var commentPattern = `(//[\S\s]*)`
-var pattern = idPattern + "|" + numPattern + "|" + strPattern + "|" + commentPattern
-
 type Lexer struct {
 	Queue   []Token
 	HasMore bool
-	Reader  *bufio.Reader
 }
 
 func NewLexer(file *os.File) *Lexer {
-	return &Lexer{
+	l := &Lexer{
 		Queue:   []Token{},
 		HasMore: true,
-		Reader:  bufio.NewReader(file),
 	}
-}
 
-func (l *Lexer) Read() {
-	matcher, _ := regexp.Compile(pattern)
-	scanner := bufio.NewScanner(l.Reader)
-	scanner.Split(bufio.ScanLines)
+	matcher := getRegExpMatcher()
+	scanner := bufio.NewScanner(bufio.NewReader(file))
 	count := 0
 	for scanner.Scan() {
 		count++
 		l.addToken(count, matcher.FindAllStringSubmatch(scanner.Text(), -1))
 	}
-	fmt.Println(l.Queue)
+
+	return l
+}
+
+func getRegExpMatcher() *regexp.Regexp {
+	idPattern := `([A-Z_a-z][A-Z_a-z0-9]*|=|!=|==|<=|>=|&&|\|\|)`
+	numPattern := `([0-9]+)`
+	strPattern := `(\"[\S\s]*\")`
+	commentPattern := `(//[\S\s]*)`
+	pattern := idPattern + "|" + numPattern + "|" + strPattern + "|" + commentPattern
+
+	matcher, _ := regexp.Compile(pattern)
+	return matcher
 }
 
 func (l *Lexer) addToken(ln int, elements [][]string) {
@@ -51,6 +52,17 @@ func (l *Lexer) addToken(ln int, elements [][]string) {
 			l.Queue = append(l.Queue, &StrToken{ln, ele[0]})
 		}
 	}
+}
+
+func (l *Lexer) Read() Token {
+	var t Token
+
+	if len(l.Queue) >= 1 {
+		t, l.Queue = l.Queue[0], l.Queue[1:]
+	} else {
+		t = EOF
+	}
+	return t
 }
 
 type Token interface {
@@ -79,6 +91,8 @@ type IdToken struct {
 	LineNum int
 	Text    string
 }
+
+var EOF = &IdToken{-1, ""}
 
 func (i IdToken) IsNumber() bool {
 	return false
