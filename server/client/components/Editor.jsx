@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Radium from 'radium';
+import Radium, { Style } from 'radium';
 
 import styles from '../styles/editor';
 
@@ -21,14 +21,16 @@ if i % 2 == 0 {
 } else {
   odd = odd + 1
 }`,
-      mode    : 'javascript',
-      tabSize : 2
+      mode      : 'javascript',
+      tabSize   : 2,
+      autofocus : true
     });
   }
 
   render () {
     return (
       <div>
+        <Style rules = {styles.global} />
         <h3 className = 'ui header'>Editor</h3>
         <div
           ref = 'editorElem'

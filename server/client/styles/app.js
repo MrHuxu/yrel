@@ -3,17 +3,13 @@ export default {
     '*' : {
       fontFamily    : "'Rambla', sans-serif",
       letterSpacing : '0.03em'
-    },
-
-    '.CodeMirror *, code' : {
-      fontFamily : '"Monaco", "MonacoRegular", "Courier New", monospace !important'
     }
   },
 
   leftPanel : {
     position : 'fixed',
     display  : 'inline-block',
-    padding  : '7% 0 0 2%',
+    padding  : '55px 0 0 2%',
     height   : '100%',
     width    : '45%',
     fontSize : '20px',
