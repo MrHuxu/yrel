@@ -2,6 +2,7 @@ package yrel
 
 import (
 	_ "fmt"
+	"strconv"
 )
 
 type ASTree interface {
@@ -59,4 +60,49 @@ func (list *ASTList) ToString() string {
 	}
 	result = result + " )"
 	return result
+}
+
+type NumberLiteral struct {
+	*ASTLeaf
+}
+
+func (n *NumberLiteral) Value() int {
+	num, _ := strconv.Atoi(n.Token.GetText())
+	return num
+}
+
+func NewNumberLiteral(t Token) *NumberLiteral {
+	return &NumberLiteral{&ASTLeaf{t}}
+}
+
+type Name struct {
+	*ASTLeaf
+}
+
+func (n *Name) Value() string {
+	return n.Token.GetText()
+}
+
+func NewName(t Token) *Name {
+	return &Name{&ASTLeaf{t}}
+}
+
+type BinaryExpr struct {
+	*ASTList
+}
+
+func (b *BinaryExpr) Left() ASTree {
+	return b.Children[0]
+}
+
+func (b *BinaryExpr) Right() ASTree {
+	return b.Children[2]
+}
+
+func (b *BinaryExpr) Operator() string {
+	return b.Children[1].ToString()
+}
+
+func NewBinaryExpr(t []ASTree) *BinaryExpr {
+	return &BinaryExpr{&ASTList{t}}
 }
