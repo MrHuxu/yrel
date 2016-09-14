@@ -70,6 +70,7 @@ type Token interface {
 	IsIdentifier() bool
 	IsString() bool
 	GetText() string
+	GetLineNumber() int
 }
 
 func GetTokenType(t Token) string {
@@ -94,20 +95,24 @@ type IdToken struct {
 
 var EOF = &IdToken{-1, ""}
 
-func (i IdToken) IsNumber() bool {
+func (i *IdToken) IsNumber() bool {
 	return false
 }
 
-func (i IdToken) IsIdentifier() bool {
+func (i *IdToken) IsIdentifier() bool {
 	return true
 }
 
-func (i IdToken) IsString() bool {
+func (i *IdToken) IsString() bool {
 	return false
 }
 
-func (i IdToken) GetText() string {
+func (i *IdToken) GetText() string {
 	return i.Text
+}
+
+func (i *IdToken) GetLineNumber() int {
+	return i.LineNum
 }
 
 type NumToken struct {
@@ -115,24 +120,28 @@ type NumToken struct {
 	Value   int
 }
 
-func (n NumToken) IsNumber() bool {
+func (n *NumToken) IsNumber() bool {
 	return true
 }
 
-func (n NumToken) IsIdentifier() bool {
+func (n *NumToken) IsIdentifier() bool {
 	return false
 }
 
-func (n NumToken) IsString() bool {
+func (n *NumToken) IsString() bool {
 	return false
 }
 
-func (n NumToken) GetText() string {
+func (n *NumToken) GetText() string {
 	return strconv.Itoa(n.Value)
 }
 
-func (n NumToken) GetNumber() int {
+func (n *NumToken) GetNumber() int {
 	return n.Value
+}
+
+func (n *NumToken) GetLineNumber() int {
+	return n.LineNum
 }
 
 type StrToken struct {
@@ -140,18 +149,22 @@ type StrToken struct {
 	Literal string
 }
 
-func (s StrToken) IsNumber() bool {
+func (s *StrToken) IsNumber() bool {
 	return false
 }
 
-func (s StrToken) IsIdentifier() bool {
+func (s *StrToken) IsIdentifier() bool {
 	return false
 }
 
-func (s StrToken) IsString() bool {
+func (s *StrToken) IsString() bool {
 	return true
 }
 
-func (s StrToken) GetText() string {
+func (s *StrToken) GetText() string {
 	return s.Literal
+}
+
+func (s *StrToken) GetLineNumber() int {
+	return s.LineNum
 }
