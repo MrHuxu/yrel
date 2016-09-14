@@ -44,12 +44,12 @@ func getRegExpMatcher() *regexp.Regexp {
 func (l *Lexer) addToken(ln int, elements [][]string) {
 	for _, ele := range elements {
 		if ele[1] != "" {
-			l.Queue = append(l.Queue, &IdToken{ln, ele[0]})
+			l.Queue = append(l.Queue, &IdToken{&Line{ln}, ele[0]})
 		} else if ele[2] != "" {
 			num, _ := strconv.Atoi(ele[0])
-			l.Queue = append(l.Queue, &NumToken{ln, num})
+			l.Queue = append(l.Queue, &NumToken{&Line{ln}, num})
 		} else if ele[3] != "" {
-			l.Queue = append(l.Queue, &StrToken{ln, ele[0]})
+			l.Queue = append(l.Queue, &StrToken{&Line{ln}, ele[0]})
 		}
 	}
 }
@@ -88,12 +88,20 @@ func GetTokenType(t Token) string {
 	return tokenType
 }
 
-type IdToken struct {
+type Line struct {
 	LineNum int
-	Text    string
 }
 
-var EOF = &IdToken{-1, ""}
+func (l *Line) GetLineNumber() int {
+	return l.LineNum
+}
+
+type IdToken struct {
+	*Line
+	Text string
+}
+
+var EOF = &IdToken{&Line{-1}, ""}
 
 func (i *IdToken) IsNumber() bool {
 	return false
@@ -111,13 +119,9 @@ func (i *IdToken) GetText() string {
 	return i.Text
 }
 
-func (i *IdToken) GetLineNumber() int {
-	return i.LineNum
-}
-
 type NumToken struct {
-	LineNum int
-	Value   int
+	*Line
+	Value int
 }
 
 func (n *NumToken) IsNumber() bool {
@@ -140,12 +144,8 @@ func (n *NumToken) GetNumber() int {
 	return n.Value
 }
 
-func (n *NumToken) GetLineNumber() int {
-	return n.LineNum
-}
-
 type StrToken struct {
-	LineNum int
+	*Line
 	Literal string
 }
 
