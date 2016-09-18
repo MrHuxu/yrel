@@ -13,23 +13,24 @@ import (
 	"unicode"
 )
 
-var regs = make(map[IdToken]NumToken)
-var base int
+var regs = make(map[string]NumToken)
 
 %}
 
 // fields inside this union end up as the fields in a structure known
 // as ${PREFIX}SymType, of which a reference is passed to the lexer.
 %union{
-	val int
+	Identifier IdToken
+	Number NumToken
 }
 
 // any non-terminal which returns a value needs a type, which is
 // really a field name in the above union struct
-%type <val> expr number
+%type <Number> expr number
 
 // same for terminals
-%token <val> DIGIT LETTER
+%token <Number> DIGIT
+%token <Identifier> LETTER
 
 %left '|'
 %left '&'
@@ -45,48 +46,41 @@ list	: /* empty */
 
 stat	:    expr
 		{
-			fmt.Printf( "%d\n", $1 );
+			fmt.Println(&1.GetText());
 		}
 	|    LETTER '=' expr
 		{
-			regs[$1]  =  $3
+			regs[$1.GetText()]  =  $3
 		}
 	;
 
 expr	:    '(' expr ')'
 		{ $$  =  $2 }
 	|    expr '+' expr
-		{ $$  =  $1 + $3 + 3}
+		{ $$  =  $1.Plus($3) }
 	|    expr '-' expr
-		{ $$  =  $1 - $3 }
+		{ $$  =  $1.Sub($3) }
 	|    expr '*' expr
-		{ $$  =  $1 * $3 }
+		{ $$  =  $1.Mul($3) }
 	|    expr '/' expr
-		{ $$  =  $1 / $3 }
+		{ $$  =  $1.Div($3) }
 	|    expr '%' expr
-		{ $$  =  $1 % $3 }
+		{ $$  =  $1.Mod($3) }
 	|    expr '&' expr
-		{ $$  =  $1 & $3 }
+		{ $$  =  $1.BiteAnd($3) }
 	|    expr '|' expr
-		{ $$  =  $1 | $3 }
+		{ $$  =  $1.BiteOr($3) }
 	|    '-'  expr        %prec  UMINUS
-		{ $$  = -$2  }
+		{ $$  = $2.Neg()  }
 	|    LETTER
-		{ $$  = regs[$1] }
+		{ $$  = regs[$1.GetText()] }
 	|    number
 	;
 
 number	:    DIGIT
 		{
 			$$ = $1;
-			if $1==0 {
-				base = 8
-			} else {
-				base = 10
-			}
 		}
-	|    number DIGIT
-		{ $$ = base * $1 + $2 }
 	;
 
 %%      /*  start  of  programs  */
