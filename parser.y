@@ -6,16 +6,14 @@
 
 %{
 
-package main
+package yrel
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"unicode"
 )
 
-var regs = make([]int, 26)
+var regs = make(map[IdToken]NumToken)
 var base int
 
 %}
@@ -58,7 +56,7 @@ stat	:    expr
 expr	:    '(' expr ')'
 		{ $$  =  $2 }
 	|    expr '+' expr
-		{ $$  =  $1 + $3 }
+		{ $$  =  $1 + $3 + 3}
 	|    expr '-' expr
 		{ $$  =  $1 - $3 }
 	|    expr '*' expr
@@ -94,19 +92,19 @@ number	:    DIGIT
 %%      /*  start  of  programs  */
 
 type CalcLex struct {
-	s string
-	pos int
+	S string
+	Pos int
 }
 
 
 func (l *CalcLex) Lex(lval *yySymType) int {
 	var c rune = ' '
 	for c == ' ' {
-		if l.pos == len(l.s) {
+		if l.Pos == len(l.S) {
 			return 0
 		}
-		c = rune(l.s[l.pos])
-		l.pos += 1
+		c = rune(l.S[l.Pos])
+		l.Pos += 1
 	}
 
 	if unicode.IsDigit(c) {
@@ -121,28 +119,4 @@ func (l *CalcLex) Lex(lval *yySymType) int {
 
 func (l *CalcLex) Error(s string) {
 	fmt.Printf("syntax error: %s\n", s)
-}
-
-func main() {
-	fi := bufio.NewReader(os.NewFile(0, "stdin"))
-
-	for {
-		var eqn string
-		var ok bool
-
-		fmt.Printf("equation: ")
-		if eqn, ok = readline(fi); ok {
-			yyParse(&CalcLex{s: eqn})
-		} else {
-			break
-		}
-	}
-}
-
-func readline(fi *bufio.Reader) (string, bool) {
-	s, err := fi.ReadString('\n')
-	if err != nil {
-		return "", false
-	}
-	return s, true
 }

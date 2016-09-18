@@ -12,7 +12,7 @@ import (
 var regs = make([]int, 26)
 var base int
 
-//line parser.y:25
+//line parser.y:23
 type yySymType struct {
 	yys int
 	val int
@@ -47,7 +47,7 @@ const yyEofCode = 1
 const yyErrCode = 2
 const yyInitialStackSize = 16
 
-//line parser.y:94
+//line parser.y:92
 
 /*  start  of  programs  */
 
@@ -502,79 +502,79 @@ yydefault:
 
 	case 3:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser.y:49
+		//line parser.y:47
 		{
 			fmt.Printf("%d\n", yyDollar[1].val)
 		}
 	case 4:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:53
+		//line parser.y:51
 		{
 			regs[yyDollar[1].val] = yyDollar[3].val
 		}
 	case 5:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:59
+		//line parser.y:57
 		{
 			yyVAL.val = yyDollar[2].val
 		}
 	case 6:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:61
+		//line parser.y:59
 		{
-			yyVAL.val = yyDollar[1].val + yyDollar[3].val
+			yyVAL.val = yyDollar[1].val + yyDollar[3].val + 3
 		}
 	case 7:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:63
+		//line parser.y:61
 		{
 			yyVAL.val = yyDollar[1].val - yyDollar[3].val
 		}
 	case 8:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:65
+		//line parser.y:63
 		{
 			yyVAL.val = yyDollar[1].val * yyDollar[3].val
 		}
 	case 9:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:67
+		//line parser.y:65
 		{
 			yyVAL.val = yyDollar[1].val / yyDollar[3].val
 		}
 	case 10:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:69
+		//line parser.y:67
 		{
 			yyVAL.val = yyDollar[1].val % yyDollar[3].val
 		}
 	case 11:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:71
+		//line parser.y:69
 		{
 			yyVAL.val = yyDollar[1].val & yyDollar[3].val
 		}
 	case 12:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:73
+		//line parser.y:71
 		{
 			yyVAL.val = yyDollar[1].val | yyDollar[3].val
 		}
 	case 13:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line parser.y:75
+		//line parser.y:73
 		{
 			yyVAL.val = -yyDollar[2].val
 		}
 	case 14:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser.y:77
+		//line parser.y:75
 		{
 			yyVAL.val = regs[yyDollar[1].val]
 		}
 	case 16:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser.y:82
+		//line parser.y:80
 		{
 			yyVAL.val = yyDollar[1].val
 			if yyDollar[1].val == 0 {
@@ -585,7 +585,7 @@ yydefault:
 		}
 	case 17:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line parser.y:91
+		//line parser.y:89
 		{
 			yyVAL.val = base*yyDollar[1].val + yyDollar[2].val
 		}
