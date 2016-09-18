@@ -1,0 +1,10 @@
+server/node_modules/
+server/log/
+server/npm-debug.log
+server/dump.rdb
+
+server/logfile.log
+server/built/
+server/main
+
+y.output
