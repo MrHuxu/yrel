@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/MrHuxu/yrel"
 	"os"
@@ -12,6 +13,14 @@ func check(e error) {
 	}
 }
 
+func readline(fi *bufio.Reader) (string, bool) {
+	s, err := fi.ReadString('\n')
+	if err != nil {
+		return "", false
+	}
+	return s, true
+}
+
 func main() {
 	file, err := os.Open("./test.yr")
 	check(err)
@@ -20,4 +29,18 @@ func main() {
 	fmt.Println(lexer.Read())
 	fmt.Println(lexer.Read())
 	fmt.Println(lexer.Read())
+
+	fi := bufio.NewReader(os.NewFile(0, "stdin"))
+
+	for {
+		var eqn string
+		var ok bool
+
+		fmt.Printf("equation: ")
+		if eqn, ok = readline(fi); ok {
+			yrel.YyParse(&yrel.CalcLex{S: eqn})
+		} else {
+			break
+		}
+	}
 }
