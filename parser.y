@@ -13,15 +13,15 @@ import (
 	"unicode"
 )
 
-var regs = make(map[string]NumToken)
+var regs = make(map[string]*NumToken)
 
 %}
 
 // fields inside this union end up as the fields in a structure known
 // as ${PREFIX}SymType, of which a reference is passed to the lexer.
 %union{
-	Identifier IdToken
-	Number NumToken
+	Identifier *IdToken
+	Number *NumToken
 }
 
 // any non-terminal which returns a value needs a type, which is
@@ -46,7 +46,7 @@ list	: /* empty */
 
 stat	:    expr
 		{
-			fmt.Println(&1.GetText());
+			fmt.Println($1.GetText());
 		}
 	|    LETTER '=' expr
 		{
@@ -102,10 +102,16 @@ func (l *CalcLex) Lex(lval *yySymType) int {
 	}
 
 	if unicode.IsDigit(c) {
-		lval.val = int(c) - '0'
+		lval.Number = &NumToken{
+			Line: &Line{l.Pos},
+			Value: int(c) - '0',
+		}
 		return DIGIT
 	} else if unicode.IsLower(c) {
-		lval.val = int(c) - 'a'
+		lval.Identifier = &IdToken{
+			Line: &Line{l.Pos},
+			Text: string(c),
+		}
 		return LETTER
 	}
 	return int(c)
