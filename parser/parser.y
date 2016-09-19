@@ -6,22 +6,23 @@
 
 %{
 
-package yrel
+package parser
 
 import (
 	"fmt"
+	"github.com/MrHuxu/yrel/lexer"
 	"unicode"
 )
 
-var regs = make(map[string]*NumToken)
+var regs = make(map[string]*lexer.NumToken)
 
 %}
 
 // fields inside this union end up as the fields in a structure known
 // as ${PREFIX}SymType, of which a reference is passed to the lexer.
 %union{
-	Identifier *IdToken
-	Number *NumToken
+	Identifier *lexer.IdToken
+	Number *lexer.NumToken
 }
 
 // any non-terminal which returns a value needs a type, which is
@@ -102,14 +103,14 @@ func (l *CalcLex) Lex(lval *yySymType) int {
 	}
 
 	if unicode.IsDigit(c) {
-		lval.Number = &NumToken{
-			Line: &Line{l.Pos},
+		lval.Number = &lexer.NumToken{
+			Line: &lexer.Line{l.Pos},
 			Value: int(c) - '0',
 		}
 		return DIGIT
 	} else if unicode.IsLower(c) {
-		lval.Identifier = &IdToken{
-			Line: &Line{l.Pos},
+		lval.Identifier = &lexer.IdToken{
+			Line: &lexer.Line{l.Pos},
 			Text: string(c),
 		}
 		return LETTER

@@ -1,4 +1,4 @@
-package yrel
+package lexer
 
 import (
 	"bufio"

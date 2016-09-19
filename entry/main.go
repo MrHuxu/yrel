@@ -3,7 +3,8 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/MrHuxu/yrel"
+	"github.com/MrHuxu/yrel/lexer"
+	"github.com/MrHuxu/yrel/parser"
 	"os"
 )
 
@@ -24,7 +25,7 @@ func readline(fi *bufio.Reader) (string, bool) {
 func main() {
 	file, err := os.Open("./test.yr")
 	check(err)
-	lexer := yrel.NewLexer(file)
+	lexer := lexer.NewLexer(file)
 	fmt.Println(lexer)
 	fmt.Println(lexer.Read())
 	fmt.Println(lexer.Read())
@@ -38,7 +39,7 @@ func main() {
 
 		fmt.Printf("equation: ")
 		if eqn, ok = readline(fi); ok {
-			yrel.YyParse(&yrel.CalcLex{S: eqn})
+			parser.YyParse(&parser.CalcLex{S: eqn})
 		} else {
 			break
 		}
