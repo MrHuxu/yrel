@@ -11,12 +11,12 @@ class Editor extends Component {
       value       :
 `sum = 0
 i = 1
-while i < 10 {
+while (i < 10) {
   sum = sum + i
   i = i + 1
 }
 
-if i % 2 == 0 {
+if (i % 2 == 0) {
   even = even + 1
 } else {
   odd = odd + 1

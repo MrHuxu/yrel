@@ -1,9 +1,3 @@
-// Copyright 2011 Bobby Powers. All rights reserved.
-// Use of this source code is governed by the MIT
-// license that can be found in the LICENSE file.
-
-// based off of Appendix A from http://dinosaur.compilertools.net/yacc/
-
 %{
 
 package parser
@@ -14,24 +8,29 @@ import (
 	"unicode"
 )
 
-var regs = make(map[string]*lexer.NumToken)
+var regs = make(map[string]lexer.Token)
 
 %}
 
 // fields inside this union end up as the fields in a structure known
 // as ${PREFIX}SymType, of which a reference is passed to the lexer.
 %union{
-	Identifier *lexer.IdToken
-	Number *lexer.NumToken
+	Void lexer.Token
+	Identifier lexer.IdToken
+	Number lexer.NumToken
+	String lexer.StrToken
+	Bool lexer.BoolToken
 }
 
 // any non-terminal which returns a value needs a type, which is
 // really a field name in the above union struct
-%type <Number> expr number
+%type <Void> primary factor expr block simple statement
 
 // same for terminals
 %token <Number> DIGIT
-%token <Identifier> LETTER
+%token <Identifier> IDENTIFIER
+%token <String> STRING
+%token <Bool> BOOL
 
 %left '|'
 %left '&'
@@ -86,13 +85,13 @@ number	:    DIGIT
 
 %%      /*  start  of  programs  */
 
-type CalcLex struct {
+type Lexer struct {
 	S string
 	Pos int
 }
 
 
-func (l *CalcLex) Lex(lval *yySymType) int {
+func (l *Lexer) Lex(lval *yySymType) int {
 	var c rune = ' '
 	for c == ' ' {
 		if l.Pos == len(l.S) {
@@ -118,6 +117,6 @@ func (l *CalcLex) Lex(lval *yySymType) int {
 	return int(c)
 }
 
-func (l *CalcLex) Error(s string) {
+func (l *Lexer) Error(s string) {
 	fmt.Printf("syntax error: %s\n", s)
 }

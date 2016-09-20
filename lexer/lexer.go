@@ -34,8 +34,9 @@ func getRegExpMatcher() *regexp.Regexp {
 	idPattern := `([A-Z_a-z][A-Z_a-z0-9]*|=|!=|==|<=|>=|&&|\|\|)`
 	numPattern := `([0-9]+)`
 	strPattern := `(\"[\S\s]*\")`
+	boolPattern := `(true|false)`
 	commentPattern := `(//[\S\s]*)`
-	pattern := idPattern + "|" + numPattern + "|" + strPattern + "|" + commentPattern
+	pattern := idPattern + "|" + numPattern + "|" + strPattern + "|" + boolPattern + "|" + commentPattern
 
 	matcher, _ := regexp.Compile(pattern)
 	return matcher
@@ -50,6 +51,9 @@ func (l *Lexer) addToken(ln int, elements [][]string) {
 			l.Queue = append(l.Queue, &NumToken{&Line{ln}, num})
 		} else if ele[3] != "" {
 			l.Queue = append(l.Queue, &StrToken{&Line{ln}, ele[0]})
+		} else if ele[4] != "" {
+			val := ele[4] == "true"
+			l.Queue = append(l.Queue, &BoolToken{&Line{ln}, val})
 		}
 	}
 }
@@ -86,12 +90,4 @@ func GetTokenType(t Token) string {
 	}
 
 	return tokenType
-}
-
-type Line struct {
-	LineNum int
-}
-
-func (l *Line) GetLineNumber() int {
-	return l.LineNum
 }

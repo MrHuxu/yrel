@@ -1,18 +1,18 @@
-//line parser.y:8
+//line parser.y:2
 package parser
 
 import __yyfmt__ "fmt"
 
-//line parser.y:9
+//line parser.y:3
 import (
 	"fmt"
 	"github.com/MrHuxu/yrel/lexer"
 	"unicode"
 )
 
-var regs = make(map[string]*lexer.NumToken)
+var regs = make(map[string]lexer.Token)
 
-//line parser.y:23
+//line parser.y:17
 type yySymType struct {
 	yys        int
 	Identifier *lexer.IdToken
@@ -48,16 +48,16 @@ const yyEofCode = 1
 const yyErrCode = 2
 const yyInitialStackSize = 16
 
-//line parser.y:87
+//line parser.y:81
 
 /*  start  of  programs  */
 
-type CalcLex struct {
+type Lexer struct {
 	S   string
 	Pos int
 }
 
-func (l *CalcLex) Lex(lval *yySymType) int {
+func (l *Lexer) Lex(lval *yySymType) int {
 	var c rune = ' '
 	for c == ' ' {
 		if l.Pos == len(l.S) {
@@ -83,7 +83,7 @@ func (l *CalcLex) Lex(lval *yySymType) int {
 	return int(c)
 }
 
-func (l *CalcLex) Error(s string) {
+func (l *Lexer) Error(s string) {
 	fmt.Printf("syntax error: %s\n", s)
 }
 
@@ -506,79 +506,79 @@ yydefault:
 
 	case 3:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser.y:49
+		//line parser.y:43
 		{
 			fmt.Println(yyDollar[1].Number.GetText())
 		}
 	case 4:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:53
+		//line parser.y:47
 		{
 			regs[yyDollar[1].Identifier.GetText()] = yyDollar[3].Number
 		}
 	case 5:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:59
+		//line parser.y:53
 		{
 			yyVAL.Number = yyDollar[2].Number
 		}
 	case 6:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:61
+		//line parser.y:55
 		{
 			yyVAL.Number = yyDollar[1].Number.Plus(yyDollar[3].Number)
 		}
 	case 7:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:63
+		//line parser.y:57
 		{
 			yyVAL.Number = yyDollar[1].Number.Sub(yyDollar[3].Number)
 		}
 	case 8:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:65
+		//line parser.y:59
 		{
 			yyVAL.Number = yyDollar[1].Number.Mul(yyDollar[3].Number)
 		}
 	case 9:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:67
+		//line parser.y:61
 		{
 			yyVAL.Number = yyDollar[1].Number.Div(yyDollar[3].Number)
 		}
 	case 10:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:69
+		//line parser.y:63
 		{
 			yyVAL.Number = yyDollar[1].Number.Mod(yyDollar[3].Number)
 		}
 	case 11:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:71
+		//line parser.y:65
 		{
 			yyVAL.Number = yyDollar[1].Number.BiteAnd(yyDollar[3].Number)
 		}
 	case 12:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:73
+		//line parser.y:67
 		{
 			yyVAL.Number = yyDollar[1].Number.BiteOr(yyDollar[3].Number)
 		}
 	case 13:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line parser.y:75
+		//line parser.y:69
 		{
 			yyVAL.Number = yyDollar[2].Number.Neg()
 		}
 	case 14:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser.y:77
+		//line parser.y:71
 		{
 			yyVAL.Number = regs[yyDollar[1].Identifier.GetText()]
 		}
 	case 16:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser.y:82
+		//line parser.y:76
 		{
 			yyVAL.Number = yyDollar[1].Number
 		}

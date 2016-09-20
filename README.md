@@ -76,3 +76,31 @@ Yrel 语言的单词只有三种类型: 标识符, 整型和字符串类型. 分
 我们可以使用```NewLexer()```方法来创建一个词法分析器```Lexer```的实例, 这个实例的主要内容是一个```Queue[]```数组, 通过使用借口实现泛型, 用来保存分析得到的token序列.
 
 ```Lexer```有一个```Read()```方法, 可以用于从词法分析器中读取token, 当所有元素已经读取出来时, 将会返回```EOF```.
+
+---
+
+## Day4: 语法分析
+
+进行语法分析的时候, 语法元素有终结符和非终结符的却别, 这里我使用```go tool```原生的```yacc```库编写一个语法分析器.
+
+语法的定义使用BNF范式, 并且约定终结符为全大写, 非终结符为全小写.
+
+1. 终结符
+
+    - ```IDENTIFIER```: 对应词法分析中的```IdToken```类型
+    - ```NUMBER```: 对应词法分析中的```NumToken```类型
+    - ```STRING```: 对应词法分析中的```StrToken```类型
+    - ```BOOL```: 对应词法中的```BoolToken```类型
+
+2. 非终结符及其表达式
+
+    - ```primary```: ```"(" expr ")" | NUMBER | IDENTIFIER | STRING | BOOL```
+    - ```factor```: ```"-" primary | primary```
+    - ```expr```: ```factor { OP factor }```
+    - ```block```: ```"{" [statement] "}"```
+    - ```simple```: expr
+    - ```statement```:
+        - ```"if" expr block [ "else" block ]```
+        - ```"while" expr block```
+        - ```simple```
+    - ```program```: ```[statement]```

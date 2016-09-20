@@ -39,7 +39,7 @@ func main() {
 
 		fmt.Printf("equation: ")
 		if eqn, ok = readline(fi); ok {
-			parser.YyParse(&parser.CalcLex{S: eqn})
+			parser.YyParse(&parser.Lexer{S: eqn})
 		} else {
 			break
 		}
