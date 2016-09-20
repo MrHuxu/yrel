@@ -24,6 +24,7 @@ var regs = make(map[string]lexer.Token)
 
 // any non-terminal which returns a value needs a type, which is
 // really a field name in the above union struct
+%type <Void> expr
 %type <Number> calc number
 %type <Bool> comp
 
@@ -33,6 +34,7 @@ var regs = make(map[string]lexer.Token)
 %token <String> STRING
 %token <Bool> BOOL
 
+%left '>'
 %left '|'
 %left '&'
 %left '+'  '-'
@@ -45,12 +47,20 @@ list	: /* empty */
 	| list stat '\n'
 	;
 
-stat	:    calc
-		{ fmt.Println($1.GetText()) }
-	|    comp
-	  { fmt.Println($1.GetText()) }
-	|    IDENTIFIER '=' calc
+stat	:    expr
+		{
+			fmt.Println($1.GetText())
+		}
+	|    IDENTIFIER '=' expr
 		{ regs[$1.GetText()]  =  $3 }
+	|    IDENTIFIER
+		{	fmt.Println(regs[$1.GetText()].GetText()) }
+	;
+
+expr  : calc
+		{ $$ = $1 }
+	|    comp
+	  { $$ = $1 }
 	;
 
 comp  : '(' comp ')'
@@ -77,8 +87,6 @@ calc	:    '(' calc ')'
 		{ $$  =  $1.BiteOr($3) }
 	|    '-'  calc        %prec  UMINUS
 		{ $$  = $2.Neg()  }
-	|    IDENTIFIER
-		{ $$  = regs[$1.GetText()] }
 	|    number
 	;
 
@@ -113,11 +121,19 @@ func (l *Lexer) Lex(lval *yySymType) int {
 		}
 		return NUMBER
 	} else if unicode.IsLower(c) {
-		lval.Identifier = lexer.IdToken{
-			Line: &lexer.Line{l.Pos},
-			Text: string(c),
+		if string(c) == "true" || string(c) == "false" {
+			lval.Bool = lexer.BoolToken{
+				Line: &lexer.Line{l.Pos},
+				Value: string(c) == "true",
+			}
+			return BOOL
+		} else {
+			lval.Identifier = lexer.IdToken{
+				Line: &lexer.Line{l.Pos},
+				Text: string(c),
+			}
+			return IDENTIFIER
 		}
-		return IDENTIFIER
 	}
 	return int(c)
 }
