@@ -8,7 +8,7 @@ import (
 	"unicode"
 )
 
-var regs = make(map[string]*lexer.NumToken)
+var regs = make(map[string]lexer.Token)
 
 %}
 
@@ -16,18 +16,19 @@ var regs = make(map[string]*lexer.NumToken)
 // as ${PREFIX}SymType, of which a reference is passed to the lexer.
 %union{
 	Void lexer.Token
-	Identifier *lexer.IdToken
-	Number *lexer.NumToken
-	String *lexer.StrToken
-	Bool *lexer.BoolToken
+	Identifier lexer.IdToken
+	Number lexer.NumToken
+	String lexer.StrToken
+	Bool lexer.BoolToken
 }
 
 // any non-terminal which returns a value needs a type, which is
 // really a field name in the above union struct
-%type <Number> expr number
+%type <Number> calc number
+%type <Bool> comp
 
 // same for terminals
-%token <Number> DIGIT
+%token <Number> NUMBER
 %token <Identifier> IDENTIFIER
 %token <String> STRING
 %token <Bool> BOOL
@@ -44,40 +45,44 @@ list	: /* empty */
 	| list stat '\n'
 	;
 
-stat	:    expr
-		{
-			fmt.Println($1.GetText());
-		}
-	|    IDENTIFIER '=' expr
-		{
-			regs[$1.GetText()]  =  $3
-		}
+stat	:    calc
+		{ fmt.Println($1.GetText()) }
+	|    comp
+	  { fmt.Println($1.GetText()) }
+	|    IDENTIFIER '=' calc
+		{ regs[$1.GetText()]  =  $3 }
 	;
 
-expr	:    '(' expr ')'
+comp  : '(' comp ')'
+		{ $$ = $2 }
+	|    calc '>' calc
+		{ $$ = $1.BiggerThan($3) }
+	;
+
+calc	:    '(' calc ')'
 		{ $$  =  $2 }
-	|    expr '+' expr
+	|    calc '+' calc
 		{ $$  =  $1.Plus($3) }
-	|    expr '-' expr
+	|    calc '-' calc
 		{ $$  =  $1.Sub($3) }
-	|    expr '*' expr
+	|    calc '*' calc
 		{ $$  =  $1.Mul($3) }
-	|    expr '/' expr
+	|    calc '/' calc
 		{ $$  =  $1.Div($3) }
-	|    expr '%' expr
+	|    calc '%' calc
 		{ $$  =  $1.Mod($3) }
-	|    expr '&' expr
+	|    calc '&' calc
 		{ $$  =  $1.BiteAnd($3) }
-	|    expr '|' expr
+	|    calc '|' calc
 		{ $$  =  $1.BiteOr($3) }
-	|    '-'  expr        %prec  UMINUS
+	|    '-'  calc        %prec  UMINUS
 		{ $$  = $2.Neg()  }
 	|    IDENTIFIER
 		{ $$  = regs[$1.GetText()] }
 	|    number
 	;
 
-number	:    DIGIT
+number	:    NUMBER
 		{
 			$$ = $1;
 		}
@@ -102,13 +107,13 @@ func (l *Lexer) Lex(lval *yySymType) int {
 	}
 
 	if unicode.IsDigit(c) {
-		lval.Number = &lexer.NumToken{
+		lval.Number = lexer.NumToken{
 			Line: &lexer.Line{l.Pos},
 			Value: int(c) - '0',
 		}
-		return DIGIT
+		return NUMBER
 	} else if unicode.IsLower(c) {
-		lval.Identifier = &lexer.IdToken{
+		lval.Identifier = lexer.IdToken{
 			Line: &lexer.Line{l.Pos},
 			Text: string(c),
 		}

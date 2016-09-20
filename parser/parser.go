@@ -1,28 +1,28 @@
-//line parser.y:2
+//line parser/parser.y:2
 package parser
 
 import __yyfmt__ "fmt"
 
-//line parser.y:3
+//line parser/parser.y:3
 import (
 	"fmt"
 	"github.com/MrHuxu/yrel/lexer"
 	"unicode"
 )
 
-var regs = make(map[string]*lexer.NumToken)
+var regs = make(map[string]lexer.NumToken)
 
-//line parser.y:17
+//line parser/parser.y:17
 type yySymType struct {
 	yys        int
-	Void       *lexer.Token
-	Identifier *lexer.IdToken
-	Number     *lexer.NumToken
-	String     *lexer.StrToken
-	Bool       *lexer.BoolToken
+	Void       lexer.Token
+	Identifier lexer.IdToken
+	Number     lexer.NumToken
+	String     lexer.StrToken
+	Bool       lexer.BoolToken
 }
 
-const DIGIT = 57346
+const NUMBER = 57346
 const IDENTIFIER = 57347
 const STRING = 57348
 const BOOL = 57349
@@ -32,7 +32,7 @@ var yyToknames = [...]string{
 	"$end",
 	"error",
 	"$unk",
-	"DIGIT",
+	"NUMBER",
 	"IDENTIFIER",
 	"STRING",
 	"BOOL",
@@ -48,6 +48,7 @@ var yyToknames = [...]string{
 	"'='",
 	"'('",
 	"')'",
+	"'>'",
 }
 var yyStatenames = [...]string{}
 
@@ -55,7 +56,7 @@ const yyEofCode = 1
 const yyErrCode = 2
 const yyInitialStackSize = 16
 
-//line parser.y:86
+//line parser/parser.y:91
 
 /*  start  of  programs  */
 
@@ -75,13 +76,13 @@ func (l *Lexer) Lex(lval *yySymType) int {
 	}
 
 	if unicode.IsDigit(c) {
-		lval.Number = &lexer.NumToken{
+		lval.Number = lexer.NumToken{
 			Line:  &lexer.Line{l.Pos},
 			Value: int(c) - '0',
 		}
-		return DIGIT
+		return NUMBER
 	} else if unicode.IsLower(c) {
-		lval.Identifier = &lexer.IdToken{
+		lval.Identifier = lexer.IdToken{
 			Line: &lexer.Line{l.Pos},
 			Text: string(c),
 		}
@@ -101,54 +102,60 @@ var yyExca = [...]int{
 	-2, 0,
 }
 
-const yyNprod = 17
+const yyNprod = 20
 const yyPrivate = 57344
 
 var yyTokenNames []string
 var yyStates []string
 
-const yyLast = 56
+const yyLast = 86
 
 var yyAct = [...]int{
 
-	3, 10, 11, 12, 13, 14, 18, 20, 2, 17,
-	9, 21, 22, 23, 24, 25, 26, 27, 28, 16,
-	15, 10, 11, 12, 13, 14, 8, 19, 8, 4,
-	29, 1, 7, 6, 0, 6, 0, 12, 13, 14,
-	5, 0, 5, 16, 15, 10, 11, 12, 13, 14,
-	15, 10, 11, 12, 13, 14,
+	3, 17, 12, 13, 14, 15, 16, 21, 23, 34,
+	19, 10, 25, 26, 27, 28, 29, 30, 31, 32,
+	33, 14, 15, 16, 2, 36, 18, 17, 12, 13,
+	14, 15, 16, 1, 8, 0, 0, 35, 11, 18,
+	17, 12, 13, 14, 15, 16, 12, 13, 14, 15,
+	16, 11, 18, 17, 12, 13, 14, 15, 16, 9,
+	22, 9, 22, 35, 9, 5, 7, 4, 7, 0,
+	0, 7, 0, 24, 20, 6, 0, 0, 6, 18,
+	17, 12, 13, 14, 15, 16,
 }
 var yyPact = [...]int{
 
-	-1000, 24, -6, 35, -8, 22, 22, -1000, -1000, -1000,
-	22, 22, 22, 22, 22, 22, 22, 22, 11, -1000,
-	-1000, 25, 25, -1000, -1000, -1000, -9, 41, 35, -1000,
+	-1000, 60, -5, 31, -1000, -7, 57, 55, -1000, -1000,
+	-1000, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+	-10, 18, -1000, -1000, 55, 71, 9, 9, -1000, -1000,
+	-1000, 36, -8, 71, -1000, -1000, 44,
 }
 var yyPgo = [...]int{
 
-	0, 0, 32, 31, 8,
+	0, 0, 34, 67, 33, 24,
 }
 var yyR1 = [...]int{
 
-	0, 3, 3, 4, 4, 1, 1, 1, 1, 1,
-	1, 1, 1, 1, 1, 1, 2,
+	0, 4, 4, 5, 5, 5, 3, 3, 1, 1,
+	1, 1, 1, 1, 1, 1, 1, 1, 1, 2,
 }
 var yyR2 = [...]int{
 
-	0, 0, 3, 1, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 2, 1, 1, 1,
+	0, 0, 3, 1, 1, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 2, 1, 1, 1,
 }
 var yyChk = [...]int{
 
-	-1000, -3, -4, -1, 5, 18, 11, -2, 4, 16,
-	10, 11, 12, 13, 14, 9, 8, 17, -1, 5,
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, 19,
+	-1000, -4, -5, -1, -3, 5, 18, 11, -2, 4,
+	16, 20, 10, 11, 12, 13, 14, 9, 8, 17,
+	-3, -1, 5, -1, 18, -1, -1, -1, -1, -1,
+	-1, -1, -1, -1, 19, 19, -1,
 }
 var yyDef = [...]int{
 
-	1, -2, 0, 3, 14, 0, 0, 15, 16, 2,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 14,
-	13, 6, 7, 8, 9, 10, 11, 12, 4, 5,
+	1, -2, 0, 3, 4, 17, 0, 0, 18, 19,
+	2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 17, 16, 0, 7, 9, 10, 11, 12,
+	13, 14, 15, 5, 6, 8, 0,
 }
 var yyTok1 = [...]int{
 
@@ -158,7 +165,7 @@ var yyTok1 = [...]int{
 	3, 3, 3, 3, 3, 3, 3, 14, 9, 3,
 	18, 19, 12, 10, 3, 11, 3, 13, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 17, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 17, 20, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -513,79 +520,97 @@ yydefault:
 
 	case 3:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser.y:48
+		//line parser/parser.y:49
 		{
 			fmt.Println(yyDollar[1].Number.GetText())
 		}
 	case 4:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:52
+		yyDollar = yyS[yypt-1 : yypt+1]
+		//line parser/parser.y:51
 		{
-			regs[yyDollar[1].Identifier.GetText()] = yyDollar[3].Number
+			fmt.Println(yyDollar[1].Bool.GetText())
 		}
 	case 5:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:58
+		//line parser/parser.y:53
 		{
-			yyVAL.Number = yyDollar[2].Number
+			regs[yyDollar[1].Identifier.GetText()] = yyDollar[3].Number
 		}
 	case 6:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:60
+		//line parser/parser.y:57
 		{
-			yyVAL.Number = yyDollar[1].Number.Plus(yyDollar[3].Number)
+			yyVAL.Bool = yyDollar[2].Bool
 		}
 	case 7:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:62
+		//line parser/parser.y:59
 		{
-			yyVAL.Number = yyDollar[1].Number.Sub(yyDollar[3].Number)
+			yyVAL.Bool = yyDollar[1].Number.BiggerThan(yyDollar[3].Number)
 		}
 	case 8:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:64
+		//line parser/parser.y:63
 		{
-			yyVAL.Number = yyDollar[1].Number.Mul(yyDollar[3].Number)
+			yyVAL.Number = yyDollar[2].Number
 		}
 	case 9:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:66
+		//line parser/parser.y:65
 		{
-			yyVAL.Number = yyDollar[1].Number.Div(yyDollar[3].Number)
+			yyVAL.Number = yyDollar[1].Number.Plus(yyDollar[3].Number)
 		}
 	case 10:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:68
+		//line parser/parser.y:67
 		{
-			yyVAL.Number = yyDollar[1].Number.Mod(yyDollar[3].Number)
+			yyVAL.Number = yyDollar[1].Number.Sub(yyDollar[3].Number)
 		}
 	case 11:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:70
+		//line parser/parser.y:69
 		{
-			yyVAL.Number = yyDollar[1].Number.BiteAnd(yyDollar[3].Number)
+			yyVAL.Number = yyDollar[1].Number.Mul(yyDollar[3].Number)
 		}
 	case 12:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser.y:72
+		//line parser/parser.y:71
+		{
+			yyVAL.Number = yyDollar[1].Number.Div(yyDollar[3].Number)
+		}
+	case 13:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		//line parser/parser.y:73
+		{
+			yyVAL.Number = yyDollar[1].Number.Mod(yyDollar[3].Number)
+		}
+	case 14:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		//line parser/parser.y:75
+		{
+			yyVAL.Number = yyDollar[1].Number.BiteAnd(yyDollar[3].Number)
+		}
+	case 15:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		//line parser/parser.y:77
 		{
 			yyVAL.Number = yyDollar[1].Number.BiteOr(yyDollar[3].Number)
 		}
-	case 13:
+	case 16:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line parser.y:74
+		//line parser/parser.y:79
 		{
 			yyVAL.Number = yyDollar[2].Number.Neg()
 		}
-	case 14:
+	case 17:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser.y:76
+		//line parser/parser.y:81
 		{
 			yyVAL.Number = regs[yyDollar[1].Identifier.GetText()]
 		}
-	case 16:
+	case 19:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser.y:81
+		//line parser/parser.y:86
 		{
 			yyVAL.Number = yyDollar[1].Number
 		}
