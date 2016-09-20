@@ -43,49 +43,37 @@ var regs = make(map[string]lexer.Token)
 
 %%
 
-list	: /* empty */
+list	:
+		/* empty */
 	| list stat '\n'
-	;
+;
 
-stat	:    expr
-		{
-			fmt.Println($1.GetText())
-		}
-	|    IDENTIFIER '=' expr
-		{ regs[$1.GetText()]  =  $3 }
-	;
+stat :
+		expr 												{ fmt.Println($1.GetText()) }
+	| IDENTIFIER '=' expr					{ regs[$1.GetText()]  =  $3 }
+;
 
-expr  : calc
-		{ $$ = $1 }
-	|    comp
-	  { $$ = $1 }
-	;
+expr :
+		calc												{ $$ = $1 }
+	| comp												{ $$ = $1 }
+;
 
-comp  : '(' comp ')'
-		{ $$ = $2 }
-	|    calc '>' calc
-		{ $$ = $1.BiggerThan($3) }
-	;
+comp :
+		'(' comp ')'								{ $$ = $2 }
+	| calc '>' calc               { $$ = $1.BiggerThan($3) }
+;
 
-calc	:    '(' calc ')'
-		{ $$  =  $2 }
-	|    calc '+' calc
-		{ $$  =  $1.Plus($3) }
-	|    calc '-' calc
-		{ $$  =  $1.Sub($3) }
-	|    calc '*' calc
-		{ $$  =  $1.Mul($3) }
-	|    calc '/' calc
-		{ $$  =  $1.Div($3) }
-	|    calc '%' calc
-		{ $$  =  $1.Mod($3) }
-	|    calc '&' calc
-		{ $$  =  $1.BiteAnd($3) }
-	|    calc '|' calc
-		{ $$  =  $1.BiteOr($3) }
-	|    '-'  calc        %prec  UMINUS
-		{ $$  = $2.Neg()  }
-	|   primary  
+calc :
+		'(' calc ')'  											{ $$  =  $2 }
+	| calc '+' calc												{ $$  =  $1.Plus($3) }
+	| calc '-' calc												{ $$  =  $1.Sub($3) }
+	| calc '*' calc												{ $$  =  $1.Mul($3) }
+	| calc '/' calc												{ $$  =  $1.Div($3) }
+	| calc '%' calc												{ $$  =  $1.Mod($3) }
+	| calc '&' calc												{ $$  =  $1.BiteAnd($3) }
+	| calc '|' calc												{ $$  =  $1.BiteOr($3) }
+	| '-'  calc        %prec  UMINUS			{ $$  = $2.Neg()  }
+	| primary  
 		{
 			if $1.IsNumber() {
 				$$ = $1.(lexer.NumToken)
@@ -98,9 +86,9 @@ calc	:    '(' calc ')'
 		}
 	;
 
-primary  :    NUMBER
-		{ $$ = $1 }
-	|    IDENTIFIER
+primary :
+		NUMBER         { $$ = $1 }
+	| IDENTIFIER
 		{
 			switch lexer.GetTokenType(regs[$1.GetText()]) {
 			case "Bool":
