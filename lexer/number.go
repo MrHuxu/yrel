@@ -9,78 +9,78 @@ type NumToken struct {
 	Value int
 }
 
-func (n *NumToken) IsNumber() bool {
+func (n NumToken) IsNumber() bool {
 	return true
 }
 
-func (n *NumToken) IsIdentifier() bool {
+func (n NumToken) IsIdentifier() bool {
 	return false
 }
 
-func (n *NumToken) IsString() bool {
+func (n NumToken) IsString() bool {
 	return false
 }
 
-func (n *NumToken) GetText() string {
+func (n NumToken) GetText() string {
 	return strconv.Itoa(n.Value)
 }
 
-func (n *NumToken) Plus(m *NumToken) *NumToken {
+func (n NumToken) Plus(m *NumToken) *NumToken {
 	return &NumToken{
 		Line:  n.Line,
 		Value: n.Value + m.Value,
 	}
 }
 
-func (n *NumToken) Sub(m *NumToken) *NumToken {
+func (n NumToken) Sub(m *NumToken) *NumToken {
 	return &NumToken{
 		Line:  n.Line,
 		Value: n.Value - m.Value,
 	}
 }
 
-func (n *NumToken) Mul(m *NumToken) *NumToken {
+func (n NumToken) Mul(m *NumToken) *NumToken {
 	return &NumToken{
 		Line:  n.Line,
 		Value: n.Value * m.Value,
 	}
 }
 
-func (n *NumToken) Div(m *NumToken) *NumToken {
+func (n NumToken) Div(m *NumToken) *NumToken {
 	return &NumToken{
 		Line:  n.Line,
 		Value: n.Value / m.Value,
 	}
 }
 
-func (n *NumToken) Mod(m *NumToken) *NumToken {
+func (n NumToken) Mod(m *NumToken) *NumToken {
 	return &NumToken{
 		Line:  n.Line,
 		Value: n.Value % m.Value,
 	}
 }
 
-func (n *NumToken) BiteAnd(m *NumToken) *NumToken {
+func (n NumToken) BiteAnd(m *NumToken) *NumToken {
 	return &NumToken{
 		Line:  n.Line,
 		Value: n.Value & m.Value,
 	}
 }
 
-func (n *NumToken) BiteOr(m *NumToken) *NumToken {
+func (n NumToken) BiteOr(m *NumToken) *NumToken {
 	return &NumToken{
 		Line:  n.Line,
 		Value: n.Value | m.Value,
 	}
 }
 
-func (n *NumToken) Neg() *NumToken {
+func (n NumToken) Neg() *NumToken {
 	return &NumToken{
 		Line:  n.Line,
 		Value: -n.Value,
 	}
 }
 
-func (n *NumToken) GetNumber() int {
+func (n NumToken) GetNumber() int {
 	return n.Value
 }

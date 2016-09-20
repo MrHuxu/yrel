@@ -8,7 +8,7 @@ import (
 	"unicode"
 )
 
-var regs = make(map[string]lexer.Token)
+var regs = make(map[string]*lexer.NumToken)
 
 %}
 
@@ -16,15 +16,15 @@ var regs = make(map[string]lexer.Token)
 // as ${PREFIX}SymType, of which a reference is passed to the lexer.
 %union{
 	Void lexer.Token
-	Identifier lexer.IdToken
-	Number lexer.NumToken
-	String lexer.StrToken
-	Bool lexer.BoolToken
+	Identifier *lexer.IdToken
+	Number *lexer.NumToken
+	String *lexer.StrToken
+	Bool *lexer.BoolToken
 }
 
 // any non-terminal which returns a value needs a type, which is
 // really a field name in the above union struct
-%type <Void> primary factor expr block simple statement
+%type <Number> expr number
 
 // same for terminals
 %token <Number> DIGIT
@@ -48,7 +48,7 @@ stat	:    expr
 		{
 			fmt.Println($1.GetText());
 		}
-	|    LETTER '=' expr
+	|    IDENTIFIER '=' expr
 		{
 			regs[$1.GetText()]  =  $3
 		}
@@ -72,7 +72,7 @@ expr	:    '(' expr ')'
 		{ $$  =  $1.BiteOr($3) }
 	|    '-'  expr        %prec  UMINUS
 		{ $$  = $2.Neg()  }
-	|    LETTER
+	|    IDENTIFIER
 		{ $$  = regs[$1.GetText()] }
 	|    number
 	;
@@ -112,7 +112,7 @@ func (l *Lexer) Lex(lval *yySymType) int {
 			Line: &lexer.Line{l.Pos},
 			Text: string(c),
 		}
-		return LETTER
+		return IDENTIFIER
 	}
 	return int(c)
 }
