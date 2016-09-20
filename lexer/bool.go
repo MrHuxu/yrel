@@ -5,20 +5,24 @@ type BoolToken struct {
 	Value bool
 }
 
-func (s BoolToken) IsNumber() bool {
+func (b BoolToken) IsNumber() bool {
 	return false
 }
 
-func (s BoolToken) IsIdentifier() bool {
+func (b BoolToken) IsIdentifier() bool {
 	return false
 }
 
-func (s BoolToken) IsString() bool {
+func (b BoolToken) IsString() bool {
+	return false
+}
+
+func (b BoolToken) IsBool() bool {
 	return true
 }
 
-func (s BoolToken) GetText() string {
-	if s.Value {
+func (b BoolToken) GetText() string {
+	if b.Value {
 		return "true"
 	} else {
 		return "false"

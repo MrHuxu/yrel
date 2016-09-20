@@ -24,8 +24,8 @@ var regs = make(map[string]lexer.Token)
 
 // any non-terminal which returns a value needs a type, which is
 // really a field name in the above union struct
-%type <Void> expr
-%type <Number> calc number
+%type <Void> expr primary
+%type <Number> calc
 %type <Bool> comp
 
 // same for terminals
@@ -53,8 +53,6 @@ stat	:    expr
 		}
 	|    IDENTIFIER '=' expr
 		{ regs[$1.GetText()]  =  $3 }
-	|    IDENTIFIER
-		{	fmt.Println(regs[$1.GetText()].GetText()) }
 	;
 
 expr  : calc
@@ -87,12 +85,31 @@ calc	:    '(' calc ')'
 		{ $$  =  $1.BiteOr($3) }
 	|    '-'  calc        %prec  UMINUS
 		{ $$  = $2.Neg()  }
-	|    number
+	|   primary  
+		{
+			if $1.IsNumber() {
+				$$ = $1.(lexer.NumToken)
+			} else {
+				$$ = lexer.NumToken{
+					Line: $1.(lexer.BoolToken).Line,
+					Value: 0,
+				}
+			}
+		}
 	;
 
-number	:    NUMBER
+primary  :    NUMBER
+		{ $$ = $1 }
+	|    IDENTIFIER
 		{
-			$$ = $1;
+			switch lexer.GetTokenType(regs[$1.GetText()]) {
+			case "Bool":
+				$$ = regs[$1.GetText()].(lexer.BoolToken)
+			case "Number":
+				$$ = regs[$1.GetText()].(lexer.NumToken)
+			default:
+				$$ = regs[$1.GetText()].(lexer.NumToken)
+			}
 		}
 	;
 

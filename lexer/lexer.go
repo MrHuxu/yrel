@@ -73,6 +73,7 @@ type Token interface {
 	IsNumber() bool
 	IsIdentifier() bool
 	IsString() bool
+	IsBool() bool
 	GetText() string
 	GetLineNumber() int
 }
@@ -85,6 +86,8 @@ func GetTokenType(t Token) string {
 		tokenType = "Identifier"
 	} else if t.IsString() {
 		tokenType = "String"
+	} else if t.IsBool() {
+		tokenType = "Bool"
 	} else {
 		tokenType = "Undefined"
 	}

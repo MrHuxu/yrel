@@ -5,18 +5,22 @@ type StrToken struct {
 	Literal string
 }
 
-func (s *StrToken) IsNumber() bool {
+func (s StrToken) IsNumber() bool {
 	return false
 }
 
-func (s *StrToken) IsIdentifier() bool {
+func (s StrToken) IsIdentifier() bool {
 	return false
 }
 
-func (s *StrToken) IsString() bool {
+func (s StrToken) IsString() bool {
 	return true
 }
 
-func (s *StrToken) GetText() string {
+func (s StrToken) IsBool() bool {
+	return false
+}
+
+func (s StrToken) GetText() string {
 	return s.Literal
 }

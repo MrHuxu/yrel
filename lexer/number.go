@@ -21,6 +21,10 @@ func (n NumToken) IsString() bool {
 	return false
 }
 
+func (n NumToken) IsBool() bool {
+	return false
+}
+
 func (n NumToken) GetText() string {
 	return strconv.Itoa(n.Value)
 }

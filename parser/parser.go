@@ -56,7 +56,7 @@ const yyEofCode = 1
 const yyErrCode = 2
 const yyInitialStackSize = 16
 
-//line parser/parser.y:99
+//line parser/parser.y:116
 
 /*  start  of  programs  */
 
@@ -116,56 +116,56 @@ const yyPrivate = 57344
 var yyTokenNames []string
 var yyStates []string
 
-const yyLast = 87
+const yyLast = 89
 
 var yyAct = [...]int{
 
-	5, 20, 19, 14, 15, 16, 17, 18, 22, 23,
-	34, 12, 35, 11, 26, 27, 28, 29, 30, 31,
-	32, 33, 16, 17, 18, 36, 13, 20, 19, 14,
-	15, 16, 17, 18, 2, 1, 9, 0, 35, 13,
-	20, 19, 14, 15, 16, 17, 18, 10, 4, 19,
-	14, 15, 16, 17, 18, 8, 14, 15, 16, 17,
-	18, 3, 7, 20, 19, 14, 15, 16, 17, 18,
-	10, 10, 6, 0, 25, 0, 0, 0, 8, 8,
-	21, 0, 0, 0, 0, 24, 7,
+	5, 20, 19, 14, 15, 16, 17, 18, 22, 24,
+	35, 12, 36, 11, 27, 28, 29, 30, 31, 32,
+	33, 34, 16, 17, 18, 2, 37, 13, 20, 19,
+	14, 15, 16, 17, 18, 10, 23, 10, 23, 36,
+	6, 1, 9, 8, 0, 8, 0, 0, 21, 0,
+	25, 0, 7, 13, 20, 19, 14, 15, 16, 17,
+	18, 10, 4, 19, 14, 15, 16, 17, 18, 8,
+	14, 15, 16, 17, 18, 3, 7, 20, 19, 14,
+	15, 16, 17, 18, 0, 0, 0, 0, 26,
 }
 var yyPact = [...]int{
 
-	-1000, 43, -4, -1000, -7, 31, -1000, 67, 66, -1000,
-	-1000, -1000, 67, 66, 66, 66, 66, 66, 66, 66,
-	66, -10, 18, -1000, 66, -1000, 54, 9, 9, -1000,
-	-1000, -1000, 45, 39, -1000, -1000, -8,
+	-1000, 57, -4, -1000, -7, 45, -1000, 33, 31, -1000,
+	-1000, -1000, 33, 31, 31, 31, 31, 31, 31, 31,
+	31, -10, 19, -1000, -1000, 31, -1000, 68, 9, 9,
+	-1000, -1000, -1000, 59, 53, -1000, -1000, -8,
 }
 var yyPgo = [...]int{
 
-	0, 61, 0, 36, 72, 35, 34,
+	0, 75, 42, 0, 40, 41, 25,
 }
 var yyR1 = [...]int{
 
-	0, 5, 5, 6, 6, 6, 1, 1, 4, 4,
-	2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-	3,
+	0, 5, 5, 6, 6, 1, 1, 4, 4, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 2,
+	2,
 }
 var yyR2 = [...]int{
 
-	0, 0, 3, 1, 3, 1, 1, 1, 3, 3,
-	3, 3, 3, 3, 3, 3, 3, 3, 2, 1,
+	0, 0, 3, 1, 3, 1, 1, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 2, 1, 1,
 	1,
 }
 var yyChk = [...]int{
 
-	-1000, -5, -6, -1, 5, -2, -4, 19, 12, -3,
+	-1000, -5, -6, -1, 5, -3, -4, 19, 12, -2,
 	4, 17, 18, 8, 11, 12, 13, 14, 15, 10,
-	9, -4, -2, -2, 19, -1, -2, -2, -2, -2,
-	-2, -2, -2, -2, 20, 20, -2,
+	9, -4, -3, 5, -3, 19, -1, -3, -3, -3,
+	-3, -3, -3, -3, -3, 20, 20, -3,
 }
 var yyDef = [...]int{
 
-	1, -2, 0, 3, 5, 6, 7, 0, 0, 19,
-	20, 2, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 18, 0, 4, 9, 11, 12, 13,
-	14, 15, 16, 17, 8, 10, 0,
+	1, -2, 0, 3, 20, 5, 6, 0, 0, 18,
+	19, 2, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 20, 17, 0, 4, 8, 10, 11,
+	12, 13, 14, 15, 16, 7, 9, 0,
 }
 var yyTok1 = [...]int{
 
@@ -542,93 +542,113 @@ yydefault:
 		}
 	case 5:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:57
+		//line parser/parser.y:59
 		{
-			fmt.Println(regs[yyDollar[1].Identifier.GetText()].GetText())
+			yyVAL.Void = yyDollar[1].Number
 		}
 	case 6:
 		yyDollar = yyS[yypt-1 : yypt+1]
 		//line parser/parser.y:61
 		{
-			yyVAL.Void = yyDollar[1].Number
+			yyVAL.Void = yyDollar[1].Bool
 		}
 	case 7:
-		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:63
+		yyDollar = yyS[yypt-3 : yypt+1]
+		//line parser/parser.y:65
 		{
-			yyVAL.Void = yyDollar[1].Bool
+			yyVAL.Bool = yyDollar[2].Bool
 		}
 	case 8:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		//line parser/parser.y:67
 		{
-			yyVAL.Bool = yyDollar[2].Bool
+			yyVAL.Bool = yyDollar[1].Number.BiggerThan(yyDollar[3].Number)
 		}
 	case 9:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:69
+		//line parser/parser.y:71
 		{
-			yyVAL.Bool = yyDollar[1].Number.BiggerThan(yyDollar[3].Number)
+			yyVAL.Number = yyDollar[2].Number
 		}
 	case 10:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		//line parser/parser.y:73
 		{
-			yyVAL.Number = yyDollar[2].Number
+			yyVAL.Number = yyDollar[1].Number.Plus(yyDollar[3].Number)
 		}
 	case 11:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		//line parser/parser.y:75
 		{
-			yyVAL.Number = yyDollar[1].Number.Plus(yyDollar[3].Number)
+			yyVAL.Number = yyDollar[1].Number.Sub(yyDollar[3].Number)
 		}
 	case 12:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		//line parser/parser.y:77
 		{
-			yyVAL.Number = yyDollar[1].Number.Sub(yyDollar[3].Number)
+			yyVAL.Number = yyDollar[1].Number.Mul(yyDollar[3].Number)
 		}
 	case 13:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		//line parser/parser.y:79
 		{
-			yyVAL.Number = yyDollar[1].Number.Mul(yyDollar[3].Number)
+			yyVAL.Number = yyDollar[1].Number.Div(yyDollar[3].Number)
 		}
 	case 14:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		//line parser/parser.y:81
 		{
-			yyVAL.Number = yyDollar[1].Number.Div(yyDollar[3].Number)
+			yyVAL.Number = yyDollar[1].Number.Mod(yyDollar[3].Number)
 		}
 	case 15:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		//line parser/parser.y:83
 		{
-			yyVAL.Number = yyDollar[1].Number.Mod(yyDollar[3].Number)
+			yyVAL.Number = yyDollar[1].Number.BiteAnd(yyDollar[3].Number)
 		}
 	case 16:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		//line parser/parser.y:85
 		{
-			yyVAL.Number = yyDollar[1].Number.BiteAnd(yyDollar[3].Number)
-		}
-	case 17:
-		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:87
-		{
 			yyVAL.Number = yyDollar[1].Number.BiteOr(yyDollar[3].Number)
 		}
-	case 18:
+	case 17:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line parser/parser.y:89
+		//line parser/parser.y:87
 		{
 			yyVAL.Number = yyDollar[2].Number.Neg()
 		}
+	case 18:
+		yyDollar = yyS[yypt-1 : yypt+1]
+		//line parser/parser.y:89
+		{
+			if yyDollar[1].Void.IsNumber() {
+				yyVAL.Number = yyDollar[1].Void.(lexer.NumToken)
+			} else {
+				yyVAL.Number = lexer.NumToken{
+					Line:  yyDollar[1].Void.(lexer.BoolToken).Line,
+					Value: 0,
+				}
+			}
+		}
+	case 19:
+		yyDollar = yyS[yypt-1 : yypt+1]
+		//line parser/parser.y:102
+		{
+			yyVAL.Void = yyDollar[1].Number
+		}
 	case 20:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:94
+		//line parser/parser.y:104
 		{
-			yyVAL.Number = yyDollar[1].Number
+			switch lexer.GetTokenType(regs[yyDollar[1].Identifier.GetText()]) {
+			case "Bool":
+				yyVAL.Void = regs[yyDollar[1].Identifier.GetText()].(lexer.BoolToken)
+			case "Number":
+				yyVAL.Void = regs[yyDollar[1].Identifier.GetText()].(lexer.NumToken)
+			default:
+				yyVAL.Void = regs[yyDollar[1].Identifier.GetText()].(lexer.NumToken)
+			}
 		}
 	}
 	goto yystack /* stack new state and value */
