@@ -13,7 +13,7 @@ import (
 
 var regs = make(map[string]lexer.Token)
 
-//line parser/parser.y:17
+//line parser/parser.y:18
 type yySymType struct {
 	yys        int
 	Void       lexer.Token
@@ -65,7 +65,7 @@ const yyEofCode = 1
 const yyErrCode = 2
 const yyInitialStackSize = 16
 
-//line parser/parser.y:104
+//line parser/parser.y:106
 
 /*  start  of  programs  */
 
@@ -90,33 +90,41 @@ func (l *Lexer) Lex(lval *yySymType) int {
 	logicAndPattern := `(&&)`
 	logicOrPattern := `(||)`
 
-	pattern := idPattern + "|" + numPattern + "|" + strPattern + "|" + boolPattern + "|" + commentPattern + "|" + equalPattern + "|" + unequalPattern + "|" + logicAndPattern + "|" + logicOrPattern
+	pattern := boolPattern + "|" + numPattern + "|" + strPattern + "|" + idPattern + "|" + commentPattern + "|" + equalPattern + "|" + unequalPattern + "|" + logicAndPattern + "|" + logicOrPattern
 
 	matcher, _ := regexp.Compile(pattern)
 
-	fmt.Println("pre pos: ", l.Pos)
+	// literal is the smallest element in a statement
 	var literal = ""
+
+	// leap over all empty chars
 	for l.S[l.Pos] == 32 {
 		l.Pos++
 	}
-	for l.S[l.Pos] != 32 {
+
+	// collect all un-empty chars expect '\n'
+	for l.S[l.Pos] != 32 && l.S[l.Pos] != 10 {
 		literal = literal + string(l.S[l.Pos])
 		l.Pos++
 		if l.Pos == len(l.S) {
 			break
 		}
 	}
-	fmt.Println("post pos: ", l.Pos)
 
-	fmt.Println("literal: ", literal)
+	// make this function return '\n'
+	// when get to the last of a line,
+	if l.S[l.Pos] == 10 && literal == "" {
+		literal = "\n"
+		l.Pos++
+	}
+
 	subStrs := matcher.FindAllStringSubmatch(literal, -1)[0]
-
 	if subStrs[1] != "" {
-		lval.Identifier = lexer.IdToken{
-			Line: &lexer.Line{l.Pos},
-			Text: subStrs[1],
+		lval.Bool = lexer.BoolToken{
+			Line:  &lexer.Line{l.Pos},
+			Value: subStrs[1] == "true",
 		}
-		return IDENTIFIER
+		return BOOL
 	} else if subStrs[2] != "" {
 		num, _ := strconv.Atoi(subStrs[2])
 		lval.Number = lexer.NumToken{
@@ -125,11 +133,11 @@ func (l *Lexer) Lex(lval *yySymType) int {
 		}
 		return NUMBER
 	} else if subStrs[4] != "" {
-		lval.Bool = lexer.BoolToken{
-			Line:  &lexer.Line{l.Pos},
-			Value: subStrs[4] == "true",
+		lval.Identifier = lexer.IdToken{
+			Line: &lexer.Line{l.Pos},
+			Text: subStrs[1],
 		}
-		return BOOL
+		return IDENTIFIER
 	} else if subStrs[6] != "" {
 		lval.Operator = "=="
 		return T_EQUAL
@@ -148,7 +156,7 @@ func (l *Lexer) Lex(lval *yySymType) int {
 }
 
 func (l *Lexer) Error(s string) {
-	fmt.Printf("syntax error: %s\n", s)
+	fmt.Println("syntax error at position", l.Pos)
 }
 
 //line yacctab:1
@@ -158,59 +166,58 @@ var yyExca = [...]int{
 	-2, 0,
 }
 
-const yyNprod = 19
+const yyNprod = 20
 const yyPrivate = 57344
 
 var yyTokenNames []string
 var yyStates []string
 
-const yyLast = 71
+const yyLast = 69
 
 var yyAct = [...]int{
 
-	5, 13, 31, 14, 15, 16, 17, 18, 20, 22,
-	11, 32, 12, 2, 25, 26, 27, 28, 29, 30,
-	10, 21, 10, 21, 33, 14, 15, 16, 17, 18,
-	10, 4, 8, 32, 8, 1, 9, 0, 23, 0,
-	7, 13, 8, 14, 15, 16, 17, 18, 7, 14,
-	15, 16, 17, 18, 16, 17, 18, 3, 6, 0,
-	0, 0, 0, 0, 0, 0, 19, 0, 0, 0,
-	24,
+	5, 14, 32, 15, 16, 17, 18, 19, 21, 23,
+	12, 33, 17, 18, 19, 26, 27, 28, 29, 30,
+	31, 10, 22, 3, 11, 34, 15, 16, 17, 18,
+	19, 13, 2, 8, 33, 10, 22, 25, 11, 24,
+	10, 4, 6, 11, 1, 9, 0, 8, 0, 0,
+	20, 0, 8, 7, 0, 0, 0, 14, 7, 15,
+	16, 17, 18, 19, 15, 16, 17, 18, 19,
 }
 var yyPact = [...]int{
 
-	-1000, 26, -11, -1000, 0, 28, -1000, 18, 16, -1000,
-	-1000, -1000, 18, 16, 16, 16, 16, 16, 16, -21,
-	-12, -1000, -1000, 16, -1000, 34, 37, 37, -1000, -1000,
-	-1000, -1000, -1000, 10,
+	-1000, 36, -11, -1000, 19, 44, -1000, 31, 17, -1000,
+	-1000, -1000, -1000, 31, 17, 17, 17, 17, 17, 17,
+	-21, -12, -1000, -1000, 17, -1000, 49, -5, -5, -1000,
+	-1000, -1000, -1000, -1000, 11,
 }
 var yyPgo = [...]int{
 
-	0, 57, 36, 0, 58, 35, 13,
+	0, 23, 45, 0, 42, 44, 32,
 }
 var yyR1 = [...]int{
 
 	0, 5, 5, 6, 6, 1, 1, 4, 4, 3,
-	3, 3, 3, 3, 3, 3, 3, 2, 2,
+	3, 3, 3, 3, 3, 3, 3, 2, 2, 2,
 }
 var yyR2 = [...]int{
 
 	0, 0, 3, 1, 3, 1, 1, 3, 3, 3,
-	3, 3, 3, 3, 3, 2, 1, 1, 1,
+	3, 3, 3, 3, 3, 2, 1, 1, 1, 1,
 }
 var yyChk = [...]int{
 
 	-1000, -5, -6, -1, 5, -3, -4, 22, 16, -2,
-	4, 21, 12, 13, 15, 16, 17, 18, 19, -4,
-	-3, 5, -3, 22, -1, -3, -3, -3, -3, -3,
-	-3, 23, 23, -3,
+	4, 7, 21, 12, 13, 15, 16, 17, 18, 19,
+	-4, -3, 5, -3, 22, -1, -3, -3, -3, -3,
+	-3, -3, 23, 23, -3,
 }
 var yyDef = [...]int{
 
-	1, -2, 0, 3, 18, 5, 6, 0, 0, 16,
-	17, 2, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 18, 15, 0, 4, 8, 10, 11, 12, 13,
-	14, 7, 9, 0,
+	1, -2, 0, 3, 19, 5, 6, 0, 0, 16,
+	17, 18, 2, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 19, 15, 0, 4, 8, 10, 11, 12,
+	13, 14, 7, 9, 0,
 }
 var yyTok1 = [...]int{
 
@@ -570,85 +577,85 @@ yydefault:
 
 	case 3:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:54
+		//line parser/parser.y:55
 		{
 			fmt.Println(yyDollar[1].Void.GetText())
 		}
 	case 4:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:55
+		//line parser/parser.y:56
 		{
 			regs[yyDollar[1].Identifier.GetText()] = yyDollar[3].Void
 		}
 	case 5:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:59
+		//line parser/parser.y:60
 		{
 			yyVAL.Void = yyDollar[1].Number
 		}
 	case 6:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:60
+		//line parser/parser.y:61
 		{
 			yyVAL.Void = yyDollar[1].Bool
 		}
 	case 7:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:64
+		//line parser/parser.y:65
 		{
 			yyVAL.Bool = yyDollar[2].Bool
 		}
 	case 8:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:65
+		//line parser/parser.y:66
 		{
 			yyVAL.Bool = yyDollar[1].Number.BiggerThan(yyDollar[3].Number)
 		}
 	case 9:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:69
+		//line parser/parser.y:70
 		{
 			yyVAL.Number = yyDollar[2].Number
 		}
 	case 10:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:70
+		//line parser/parser.y:71
 		{
 			yyVAL.Number = yyDollar[1].Number.Plus(yyDollar[3].Number)
 		}
 	case 11:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:71
+		//line parser/parser.y:72
 		{
 			yyVAL.Number = yyDollar[1].Number.Sub(yyDollar[3].Number)
 		}
 	case 12:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:72
+		//line parser/parser.y:73
 		{
 			yyVAL.Number = yyDollar[1].Number.Mul(yyDollar[3].Number)
 		}
 	case 13:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:73
+		//line parser/parser.y:74
 		{
 			yyVAL.Number = yyDollar[1].Number.Div(yyDollar[3].Number)
 		}
 	case 14:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:74
+		//line parser/parser.y:75
 		{
 			yyVAL.Number = yyDollar[1].Number.Mod(yyDollar[3].Number)
 		}
 	case 15:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line parser/parser.y:75
+		//line parser/parser.y:76
 		{
 			yyVAL.Number = yyDollar[2].Number.Neg()
 		}
 	case 16:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:77
+		//line parser/parser.y:78
 		{
 			if yyDollar[1].Void.IsNumber() {
 				yyVAL.Number = yyDollar[1].Void.(lexer.NumToken)
@@ -661,13 +668,19 @@ yydefault:
 		}
 	case 17:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:90
+		//line parser/parser.y:91
 		{
 			yyVAL.Void = yyDollar[1].Number
 		}
 	case 18:
 		yyDollar = yyS[yypt-1 : yypt+1]
 		//line parser/parser.y:92
+		{
+			yyVAL.Void = yyDollar[1].Bool
+		}
+	case 19:
+		yyDollar = yyS[yypt-1 : yypt+1]
+		//line parser/parser.y:94
 		{
 			switch lexer.GetTokenType(regs[yyDollar[1].Identifier.GetText()]) {
 			case "Bool":

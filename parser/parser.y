@@ -5,7 +5,8 @@ package parser
 import (
 	"fmt"
 	"github.com/MrHuxu/yrel/lexer"
-	"unicode"
+	"regexp"
+	"strconv"
 )
 
 var regs = make(map[string]lexer.Token)
@@ -88,6 +89,7 @@ calc :
 
 primary :
 		NUMBER         { $$ = $1 }
+	| BOOL 					 { $$ = $1 }
 	| IDENTIFIER
 		{
 			switch lexer.GetTokenType(regs[$1.GetText()]) {
@@ -110,48 +112,86 @@ type Lexer struct {
 
 
 func (l *Lexer) Lex(lval *yySymType) int {
-	var c rune = ' '
-	for c == ' ' {
+	if l.Pos >= len(l.S) {
+		return 0
+	}
+
+	idPattern := `([A-Z_a-z][A-Z_a-z0-9]*)`
+	numPattern := `([0-9]+)`
+	strPattern := `(\"[\S\s]*\")`
+	boolPattern := `(true|false)`
+	commentPattern := `(//[\S\s]*)`
+
+	equalPattern := `(==)`
+	unequalPattern := `(!=)`
+	logicAndPattern := `(&&)`
+	logicOrPattern := `(||)`
+
+	pattern := boolPattern + "|" + numPattern + "|" + strPattern + "|" + idPattern + "|" + commentPattern + "|" + equalPattern + "|" + unequalPattern + "|" + logicAndPattern + "|" + logicOrPattern
+
+	matcher, _ := regexp.Compile(pattern)
+
+	// literal is the smallest element in a statement 
+	var literal = ""
+
+	// leap over all empty chars
+	for l.S[l.Pos] == 32 {
+		l.Pos++
+	}
+
+	// collect all un-empty chars expect '\n'
+	for l.S[l.Pos] != 32 && l.S[l.Pos] != 10 {
+		literal = literal + string(l.S[l.Pos])
+		l.Pos++
 		if l.Pos == len(l.S) {
-			return 0
+			break
 		}
-		c = rune(l.S[l.Pos])
-		l.Pos += 1
 	}
 
-	var flag rune = ''
-	for flag != ' ' {
-		c = c + flag
-		flag = rune(l.S[l.Pos])
-		l.Pos += 1
+	// make this function return '\n'
+	// when get to the last of a line, 
+	if l.S[l.Pos] == 10 && literal == "" {
+		literal = "\n"
+		l.Pos++
 	}
 
-	fmt.Println(c)
-
-	if unicode.IsDigit(c) {
+	subStrs := matcher.FindAllStringSubmatch(literal, -1)[0]
+	if subStrs[1] != "" {
+		lval.Bool = lexer.BoolToken{
+			Line:  &lexer.Line{l.Pos},
+			Value: subStrs[1] == "true",
+		}
+		return BOOL
+	} else if subStrs[2] != "" {
+		num, _ := strconv.Atoi(subStrs[2])
 		lval.Number = lexer.NumToken{
-			Line: &lexer.Line{l.Pos},
-			Value: int(c) - '0',
+			Line:  &lexer.Line{l.Pos},
+			Value: num,
 		}
 		return NUMBER
-	} else if unicode.IsLower(c) {
-		if string(c) == "true" || string(c) == "false" {
-			lval.Bool = lexer.BoolToken{
-				Line: &lexer.Line{l.Pos},
-				Value: string(c) == "true",
-			}
-			return BOOL
-		} else {
-			lval.Identifier = lexer.IdToken{
-				Line: &lexer.Line{l.Pos},
-				Text: string(c),
-			}
-			return IDENTIFIER
+	} else if subStrs[4] != "" {
+		lval.Identifier = lexer.IdToken{
+			Line: &lexer.Line{l.Pos},
+			Text: subStrs[1],
 		}
+		return IDENTIFIER
+	} else if subStrs[6] != "" {
+		lval.Operator = "=="
+		return T_EQUAL
+	} else if subStrs[7] != "" {
+		lval.Operator = "!="
+		return T_UNEQUAL
+	} else if subStrs[8] != "" {
+		lval.Operator = "&&"
+		return T_LOGIC_AND
+	} else if subStrs[9] != "" {
+		lval.Operator = "||"
+		return T_LOGIC_OR
 	}
-	return int(c)
+
+	return int(literal[0])
 }
 
 func (l *Lexer) Error(s string) {
-	fmt.Printf("syntax error: %s\n", s)
+	fmt.Println("syntax error at position", l.Pos)
 }
