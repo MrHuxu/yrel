@@ -20,6 +20,7 @@ var regs = make(map[string]lexer.Token)
 	Number lexer.NumToken
 	String lexer.StrToken
 	Bool lexer.BoolToken
+	Operator string
 }
 
 // any non-terminal which returns a value needs a type, which is
@@ -33,10 +34,11 @@ var regs = make(map[string]lexer.Token)
 %token <Identifier> IDENTIFIER
 %token <String> STRING
 %token <Bool> BOOL
+%token <Operator> T_EQUAL T_UNEQUAL T_LOGIC_AND T_LOGIC_OR
 
-%left '>'
-%left '|'
-%left '&'
+%left '='
+%left T_LOGIC_AND T_LOGIC_OR
+%left '>' '<' T_EQUAL T_UNEQUAL
 %left '+'  '-'
 %left '*'  '/'  '%'
 %left UMINUS      /*  supplies  precedence  for  unary  minus  */
@@ -70,8 +72,6 @@ calc :
 	| calc '*' calc												{ $$  =  $1.Mul($3) }
 	| calc '/' calc												{ $$  =  $1.Div($3) }
 	| calc '%' calc												{ $$  =  $1.Mod($3) }
-	| calc '&' calc												{ $$  =  $1.BiteAnd($3) }
-	| calc '|' calc												{ $$  =  $1.BiteOr($3) }
 	| '-'  calc        %prec  UMINUS			{ $$  = $2.Neg()  }
 	| primary  
 		{
@@ -118,6 +118,15 @@ func (l *Lexer) Lex(lval *yySymType) int {
 		c = rune(l.S[l.Pos])
 		l.Pos += 1
 	}
+
+	var flag rune = ''
+	for flag != ' ' {
+		c = c + flag
+		flag = rune(l.S[l.Pos])
+		l.Pos += 1
+	}
+
+	fmt.Println(c)
 
 	if unicode.IsDigit(c) {
 		lval.Number = lexer.NumToken{
