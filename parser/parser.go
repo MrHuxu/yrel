@@ -68,9 +68,10 @@ const yyInitialStackSize = 16
 
 type Lexer struct {
 	S       string
-	Started bool
 	Tokens  [][]string
 	Pos     int
+	Started bool
+	Ended   bool
 }
 
 func (l *Lexer) Lex(lval *yySymType) int {
@@ -80,8 +81,17 @@ func (l *Lexer) Lex(lval *yySymType) int {
 		l.Started = true
 	}
 
+	for l.Pos < len(l.Tokens) && l.Tokens[l.Pos][0] == "" {
+		l.Pos++
+	}
+
 	if l.Pos == len(l.Tokens) {
-		return 0
+		if l.Ended {
+			return 0
+		} else {
+			l.Ended = true
+			return int('\n')
+		}
 	}
 
 	matchResult := l.Tokens[l.Pos]
@@ -237,23 +247,23 @@ type yyLexer interface {
 	Error(s string)
 }
 
-type yyParser interface {
+type YyParser interface {
 	Parse(yyLexer) int
 	Lookahead() int
 }
 
-type yyParserImpl struct {
+type YyParserImpl struct {
 	lval  yySymType
 	stack [yyInitialStackSize]yySymType
 	char  int
 }
 
-func (p *yyParserImpl) Lookahead() int {
+func (p *YyParserImpl) Lookahead() int {
 	return p.char
 }
 
-func yyNewParser() yyParser {
-	return &yyParserImpl{}
+func yyNewParser() YyParser {
+	return &YyParserImpl{}
 }
 
 const yyFlag = -1000
@@ -379,7 +389,7 @@ func YyParse(yylex yyLexer) int {
 	return yyNewParser().Parse(yylex)
 }
 
-func (yyrcvr *yyParserImpl) Parse(yylex yyLexer) int {
+func (yyrcvr *YyParserImpl) Parse(yylex yyLexer) int {
 	var yyn int
 	var yyVAL yySymType
 	var yyDollar []yySymType
