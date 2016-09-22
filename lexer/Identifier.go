@@ -26,3 +26,29 @@ func (i IdToken) IsBool() bool {
 func (i IdToken) GetText() string {
 	return i.Text
 }
+
+func (i IdToken) True() bool {
+	return true
+}
+
+func (i IdToken) Calc(t Token, op string) Token {
+	return NumToken{
+		Line:  i.Line,
+		Value: 1,
+	}
+}
+
+func (i IdToken) Comp(t Token, op string) Token {
+
+	return BoolToken{
+		Line:  i.Line,
+		Value: true,
+	}
+}
+
+func (i IdToken) Logic(t Token, op string) Token {
+	return BoolToken{
+		Line:  i.Line,
+		Value: true,
+	}
+}

@@ -5,7 +5,6 @@ package parser
 import (
 	"fmt"
 	"github.com/MrHuxu/yrel/lexer"
-	"regexp"
 	"strconv"
 )
 
@@ -19,26 +18,22 @@ var regs = make(map[string]lexer.Token)
 	Void lexer.Token
 	Identifier lexer.IdToken
 	Number lexer.NumToken
-	String lexer.StrToken
 	Bool lexer.BoolToken
 	Operator string
 }
 
 // any non-terminal which returns a value needs a type, which is
 // really a field name in the above union struct
-%type <Void> expr primary
-%type <Number> calc
-%type <Bool> comp
+%type <Void> expr primary calc comp logic
 
 // same for terminals
 %token <Number> NUMBER
 %token <Identifier> IDENTIFIER
-%token <String> STRING
 %token <Bool> BOOL
 %token <Operator> T_EQUAL T_UNEQUAL T_LOGIC_AND T_LOGIC_OR
 
 %left '='
-%left T_LOGIC_AND T_LOGIC_OR
+%left T_LOGIC_AND T_LOGIC_OR '!'
 %left '>' '<' T_EQUAL T_UNEQUAL
 %left '+'  '-'
 %left '*'  '/'  '%'
@@ -59,48 +54,38 @@ stat :
 expr :
 		calc												{ $$ = $1 }
 	| comp												{ $$ = $1 }
+	| logic												{ $$ = $1 }
 ;
+
+logic :
+		'(' logic ')'               { $$ = $2 }
+	| comp T_LOGIC_AND comp       { $$ = $1.Logic($3, "&&") }
+	| comp T_LOGIC_OR comp        { $$ = $1.Logic($3, "||") }
+	| '!' comp       							{ $$ = $2.Logic(nil, "!") }
+	;
 
 comp :
 		'(' comp ')'								{ $$ = $2 }
-	| calc '>' calc               { $$ = $1.BiggerThan($3) }
-;
+	| calc '>' calc               { $$ = $1.Comp($3, ">") }
+	| calc '<' calc               { $$ = $1.Comp($3, ">") }
+	| calc T_EQUAL calc           { $$ = $1.Comp($3, "==") }
+	| calc T_UNEQUAL calc         { $$ = $1.Comp($3, "!=") }
+	;
 
 calc :
 		'(' calc ')'  											{ $$  =  $2 }
-	| calc '+' calc												{ $$  =  $1.Plus($3) }
-	| calc '-' calc												{ $$  =  $1.Sub($3) }
-	| calc '*' calc												{ $$  =  $1.Mul($3) }
-	| calc '/' calc												{ $$  =  $1.Div($3) }
-	| calc '%' calc												{ $$  =  $1.Mod($3) }
-	| '-'  calc        %prec  UMINUS			{ $$  = $2.Neg()  }
+	| calc '+' calc												{ $$  =  $1.Calc($3, "+") }
+	| calc '-' calc												{ $$  =  $1.Calc($3, "-") }
+	| calc '*' calc												{ $$  =  $1.Calc($3, "*") }
+	| calc '/' calc												{ $$  =  $1.Calc($3, "/") }
+	| calc '%' calc												{ $$  =  $1.Calc($3, "%") }
 	| primary  
-		{
-			if $1.IsNumber() {
-				$$ = $1.(lexer.NumToken)
-			} else {
-				$$ = lexer.NumToken{
-					Line: $1.(lexer.BoolToken).Line,
-					Value: 0,
-				}
-			}
-		}
 	;
 
 primary :
 		NUMBER         { $$ = $1 }
 	| BOOL 					 { $$ = $1 }
-	| IDENTIFIER
-		{
-			switch lexer.GetTokenType(regs[$1.GetText()]) {
-			case "Bool":
-				$$ = regs[$1.GetText()].(lexer.BoolToken)
-			case "Number":
-				$$ = regs[$1.GetText()].(lexer.NumToken)
-			default:
-				$$ = regs[$1.GetText()].(lexer.NumToken)
-			}
-		}
+	| IDENTIFIER     { $$ = regs[$1.GetText()] }
 	;
 
 %%      /*  start  of  programs  */
@@ -110,26 +95,13 @@ type Lexer struct {
 	Pos int
 }
 
-
 func (l *Lexer) Lex(lval *yySymType) int {
 	if l.Pos >= len(l.S) {
 		return 0
 	}
 
-	idPattern := `([A-Z_a-z][A-Z_a-z0-9]*)`
-	numPattern := `([0-9]+)`
-	strPattern := `(\"[\S\s]*\")`
-	boolPattern := `(true|false)`
-	commentPattern := `(//[\S\s]*)`
-
-	equalPattern := `(==)`
-	unequalPattern := `(!=)`
-	logicAndPattern := `(&&)`
-	logicOrPattern := `(||)`
-
-	pattern := boolPattern + "|" + numPattern + "|" + strPattern + "|" + idPattern + "|" + commentPattern + "|" + equalPattern + "|" + unequalPattern + "|" + logicAndPattern + "|" + logicOrPattern
-
-	matcher, _ := regexp.Compile(pattern)
+	// build regexp matcher for lexer process
+	matcher := lexer.BuildLexerMatcher()
 
 	// literal is the smallest element in a statement 
 	var literal = ""

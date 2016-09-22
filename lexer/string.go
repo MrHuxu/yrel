@@ -24,3 +24,7 @@ func (s StrToken) IsBool() bool {
 func (s StrToken) GetText() string {
 	return s.Literal
 }
+
+func (s StrToken) True() bool {
+	return true
+}

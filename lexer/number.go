@@ -29,69 +29,65 @@ func (n NumToken) GetText() string {
 	return strconv.Itoa(n.Value)
 }
 
-func (n NumToken) Plus(m NumToken) NumToken {
+func (n NumToken) True() bool {
+	return n.Value != 0
+}
+
+func (n NumToken) Calc(t Token, op string) Token {
+	var result int
+	num, _ := strconv.Atoi(t.GetText())
+	switch op {
+	case "+":
+		result = n.Value + num
+	case "-":
+		result = n.Value - num
+	case "*":
+		result = n.Value * num
+	case "/":
+		result = n.Value / num
+	case "%":
+		result = n.Value % num
+	}
+
 	return NumToken{
 		Line:  n.Line,
-		Value: n.Value + m.Value,
+		Value: result,
 	}
 }
 
-func (n NumToken) Sub(m NumToken) NumToken {
-	return NumToken{
-		Line:  n.Line,
-		Value: n.Value - m.Value,
+func (n NumToken) Comp(t Token, op string) Token {
+	var result bool
+	num, _ := strconv.Atoi(t.GetText())
+	switch op {
+	case ">":
+		result = n.Value > num
+	case "<":
+		result = n.Value < num
+	case "==":
+		result = n.Value == num
+	case "!=":
+		result = n.Value != num
+	case "!":
+		result = !n.True()
 	}
-}
 
-func (n NumToken) Mul(m NumToken) NumToken {
-	return NumToken{
-		Line:  n.Line,
-		Value: n.Value * m.Value,
-	}
-}
-
-func (n NumToken) Div(m NumToken) NumToken {
-	return NumToken{
-		Line:  n.Line,
-		Value: n.Value / m.Value,
-	}
-}
-
-func (n NumToken) Mod(m NumToken) NumToken {
-	return NumToken{
-		Line:  n.Line,
-		Value: n.Value % m.Value,
-	}
-}
-
-func (n NumToken) BiteAnd(m NumToken) NumToken {
-	return NumToken{
-		Line:  n.Line,
-		Value: n.Value & m.Value,
-	}
-}
-
-func (n NumToken) BiteOr(m NumToken) NumToken {
-	return NumToken{
-		Line:  n.Line,
-		Value: n.Value | m.Value,
-	}
-}
-
-func (n NumToken) Neg() NumToken {
-	return NumToken{
-		Line:  n.Line,
-		Value: -n.Value,
-	}
-}
-
-func (n NumToken) GetNumber() int {
-	return n.Value
-}
-
-func (n NumToken) BiggerThan(m NumToken) BoolToken {
 	return BoolToken{
-		Line:  m.Line,
-		Value: n.Value > m.Value,
+		Line:  n.Line,
+		Value: result,
+	}
+}
+
+func (n NumToken) Logic(t Token, op string) Token {
+	var result bool
+	switch op {
+	case "&&":
+		result = n.True() && t.True()
+	case "||":
+		result = n.True() || t.True()
+	}
+
+	return BoolToken{
+		Line:  n.Line,
+		Value: result,
 	}
 }
