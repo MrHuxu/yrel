@@ -11,12 +11,13 @@ func BuildLexerMatcher() *regexp.Regexp {
 	boolPattern := `(true|false)`
 	commentPattern := `(//[\S\s]*)`
 
+	opPattern := `(=|!|>|<|\+|-|\*|/|%)`
 	equalPattern := `(==)`
 	unequalPattern := `(!=)`
 	logicAndPattern := `(&&)`
 	logicOrPattern := `(||)`
 
-	pattern := boolPattern + "|" + numPattern + "|" + strPattern + "|" + idPattern + "|" + commentPattern + "|" + equalPattern + "|" + unequalPattern + "|" + logicAndPattern + "|" + logicOrPattern
+	pattern := boolPattern + "|" + numPattern + "|" + strPattern + "|" + idPattern + "|" + commentPattern + "|" + opPattern + "|" + equalPattern + "|" + unequalPattern + "|" + logicAndPattern + "|" + logicOrPattern
 
 	matcher, _ := regexp.Compile(pattern)
 	return matcher
