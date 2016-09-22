@@ -67,7 +67,7 @@ logic :
 comp :
 		'(' comp ')'								{ $$ = $2 }
 	| calc '>' calc               { $$ = $1.Comp($3, ">") }
-	| calc '<' calc               { $$ = $1.Comp($3, ">") }
+	| calc '<' calc               { $$ = $1.Comp($3, "<") }
 	| calc T_EQUAL calc           { $$ = $1.Comp($3, "==") }
 	| calc T_UNEQUAL calc         { $$ = $1.Comp($3, "!=") }
 	;

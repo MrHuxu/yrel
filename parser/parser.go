@@ -640,7 +640,7 @@ yydefault:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		//line parser/parser.y:70
 		{
-			yyVAL.Void = yyDollar[1].Void.Comp(yyDollar[3].Void, ">")
+			yyVAL.Void = yyDollar[1].Void.Comp(yyDollar[3].Void, "<")
 		}
 	case 15:
 		yyDollar = yyS[yypt-3 : yypt+1]
