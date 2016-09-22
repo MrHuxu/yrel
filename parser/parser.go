@@ -85,6 +85,7 @@ func (l *Lexer) Lex(lval *yySymType) int {
 	}
 
 	matchResult := l.Tokens[l.Pos]
+	l.Pos++
 	if matchResult[1] != "" {
 		lval.Bool = lexer.BoolToken{
 			Line:  &lexer.Line{l.Pos},
@@ -111,15 +112,16 @@ func (l *Lexer) Lex(lval *yySymType) int {
 		lval.Operator = "!="
 		return T_UNEQUAL
 	} else if matchResult[8] != "" {
+		return int(matchResult[8][0])
+	} else if matchResult[9] != "" {
 		lval.Operator = "&&"
 		return T_LOGIC_AND
-	} else if matchResult[9] != "" {
+	} else if matchResult[10] != "" {
 		lval.Operator = "||"
 		return T_LOGIC_OR
 	}
 
-	l.Pos++
-	return int(matchResult[0][0])
+	return -1
 }
 
 func (l *Lexer) Error(s string) {
