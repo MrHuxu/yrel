@@ -48,7 +48,7 @@ list	:
 
 stat :
 		expr 												{ fmt.Println($1.GetText()) }
-	| IDENTIFIER '=' expr					{ regs[$1.GetText()]  =  $3 }
+	| IDENTIFIER '=' expr					{ regs[$1.GetText()] = $3 }
 ;
 
 expr :
@@ -60,11 +60,11 @@ expr :
 	| expr '<' expr                   { $$ = $1.Comp($3, "<") }
 	| expr T_EQUAL expr               { $$ = $1.Comp($3, "==") }
 	| expr T_UNEQUAL expr             { $$ = $1.Comp($3, "!=") }
-	| expr '+' expr					    			{ $$  =  $1.Calc($3, "+") }
-	| expr '-' expr					    			{ $$  =  $1.Calc($3, "-") }
-	| expr '*' expr					    			{ $$  =  $1.Calc($3, "*") }
-	| expr '/' expr					    			{ $$  =  $1.Calc($3, "/") }
-	| expr '%' expr					    			{ $$  =  $1.Calc($3, "%") }
+	| expr '+' expr					    			{ $$ = $1.Calc($3, "+") }
+	| expr '-' expr					    			{ $$ = $1.Calc($3, "-") }
+	| expr '*' expr					    			{ $$ = $1.Calc($3, "*") }
+	| expr '/' expr					    			{ $$ = $1.Calc($3, "/") }
+	| expr '%' expr					    			{ $$ = $1.Calc($3, "%") }
 	| primary  
 	;
 
@@ -122,7 +122,7 @@ func (l *Lexer) Lex(lval *yySymType) int {
 	} else if matchResult[4] != "" {
 		lval.Identifier = lexer.IdToken{
 			Line: &lexer.Line{l.Pos},
-			Text: matchResult[1],
+			Text: matchResult[4],
 		}
 		return IDENTIFIER
 	} else if matchResult[6] != "" {
