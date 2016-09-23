@@ -3,21 +3,25 @@ package lexer
 import (
 	_ "fmt"
 	"regexp"
+	"strings"
 )
 
 func BuildLexerMatcher() *regexp.Regexp {
-	boolPattern := `(true|false)`
-	numPattern := `([0-9]+)`
-	strPattern := `(\"[\S\s]*\")`
-	idPattern := `([A-Z_a-z][A-Z_a-z0-9]*)`
-	commentPattern := `(//[\S\s]*)`
-	equalPattern := `(==)`
-	unequalPattern := `(!=)`
-	opPattern := `(=|!|>|<|\+|-|\*|/|%|\(|\)|{|})`
-	logicAndPattern := `(\&\&)`
-	logicOrPattern := `(\|\|)`
-	pattern := boolPattern + "|" + numPattern + "|" + strPattern + "|" + idPattern + "|" + commentPattern + "|" + equalPattern + "|" + unequalPattern + "|" + opPattern + "|" + logicAndPattern + "|" + logicOrPattern
 
-	matcher, _ := regexp.Compile(pattern)
+	patterns := []string{
+		`(\"[\S\s]*\")`,            // for string
+		`(true|false)`,             // for bool
+		`(print)`,                  // for print statement
+		`([0-9]+)`,                 // for number
+		`([A-Z_a-z][A-Z_a-z0-9]*)`, // for identifier
+		`(//[\S\s]*)`,              // for comment
+		`(==)`,                     // for ==
+		`(!=)`,                     // for !=
+		`(=|!|>|<|\+|-|\*|/|%|\(|\)|{|})`, // for some operators
+		`(\&\&)`, // for &&
+		`(\|\|)`, // for ||
+	}
+
+	matcher, _ := regexp.Compile(strings.Join(patterns, "|"))
 	return matcher
 }

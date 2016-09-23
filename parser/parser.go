@@ -29,7 +29,8 @@ const T_EQUAL = 57349
 const T_UNEQUAL = 57350
 const T_LOGIC_AND = 57351
 const T_LOGIC_OR = 57352
-const UMINUS = 57353
+const T_PRINT = 57353
+const UMINUS = 57354
 
 var yyToknames = [...]string{
 	"$end",
@@ -42,6 +43,7 @@ var yyToknames = [...]string{
 	"T_UNEQUAL",
 	"T_LOGIC_AND",
 	"T_LOGIC_OR",
+	"T_PRINT",
 	"'='",
 	"'!'",
 	"'>'",
@@ -62,7 +64,7 @@ const yyEofCode = 1
 const yyErrCode = 2
 const yyInitialStackSize = 16
 
-//line parser/parser.y:77
+//line parser/parser.y:78
 
 /*  start  of  programs  */
 
@@ -96,37 +98,37 @@ func (l *Lexer) Lex(lval *yySymType) int {
 
 	matchResult := l.Tokens[l.Pos]
 	l.Pos++
-	if matchResult[1] != "" {
+	if matchResult[2] != "" {
 		lval.Bool = lexer.BoolToken{
 			Line:  &lexer.Line{l.Pos},
-			Value: matchResult[1] == "true",
+			Value: matchResult[2] == "true",
 		}
 		return BOOL
-	} else if matchResult[2] != "" {
-		num, _ := strconv.Atoi(matchResult[2])
+	} else if matchResult[4] != "" {
+		num, _ := strconv.Atoi(matchResult[4])
 		lval.Number = lexer.NumToken{
 			Line:  &lexer.Line{l.Pos},
 			Value: num,
 		}
 		return NUMBER
-	} else if matchResult[4] != "" {
+	} else if matchResult[5] != "" {
 		lval.Identifier = lexer.IdToken{
 			Line: &lexer.Line{l.Pos},
-			Text: matchResult[4],
+			Text: matchResult[5],
 		}
 		return IDENTIFIER
-	} else if matchResult[6] != "" {
+	} else if matchResult[7] != "" {
 		lval.Operator = "=="
 		return T_EQUAL
-	} else if matchResult[7] != "" {
+	} else if matchResult[8] != "" {
 		lval.Operator = "!="
 		return T_UNEQUAL
-	} else if matchResult[8] != "" {
-		return int(matchResult[8][0])
 	} else if matchResult[9] != "" {
+		return int(matchResult[9][0])
+	} else if matchResult[10] != "" {
 		lval.Operator = "&&"
 		return T_LOGIC_AND
-	} else if matchResult[10] != "" {
+	} else if matchResult[11] != "" {
 		lval.Operator = "||"
 		return T_LOGIC_OR
 	}
@@ -151,30 +153,31 @@ const yyPrivate = 57344
 var yyTokenNames []string
 var yyStates []string
 
-const yyLast = 89
+const yyLast = 93
 
 var yyAct = [...]int{
 
 	3, 17, 18, 19, 20, 21, 23, 25, 19, 20,
 	21, 10, 26, 27, 28, 29, 30, 31, 32, 33,
-	34, 35, 36, 37, 15, 16, 11, 12, 2, 22,
-	13, 14, 17, 18, 19, 20, 21, 1, 7, 0,
-	38, 15, 16, 11, 12, 0, 0, 13, 14, 17,
-	18, 19, 20, 21, 15, 16, 0, 0, 0, 0,
-	13, 14, 17, 18, 19, 20, 21, 8, 24, 9,
-	8, 4, 9, 0, 0, 6, 0, 0, 6, 0,
-	0, 0, 0, 0, 0, 5, 0, 0, 5,
+	34, 35, 36, 37, 15, 16, 11, 12, 22, 2,
+	1, 13, 14, 17, 18, 19, 20, 21, 7, 0,
+	0, 38, 15, 16, 11, 12, 0, 0, 0, 13,
+	14, 17, 18, 19, 20, 21, 15, 16, 0, 0,
+	0, 0, 0, 13, 14, 17, 18, 19, 20, 21,
+	8, 24, 9, 8, 4, 9, 0, 0, 0, 6,
+	0, 0, 6, 0, 0, 0, 0, 0, 0, 5,
+	0, 0, 5,
 }
 var yyPact = [...]int{
 
-	-1000, 66, -10, 34, 18, 63, 63, -1000, -1000, -1000,
-	-1000, 63, 63, 63, 63, 63, 63, 63, 63, 63,
-	63, 63, 63, 17, -1000, 47, 47, 47, -14, -14,
-	-14, -14, -9, -9, -1000, -1000, -1000, 34, -1000,
+	-1000, 69, -11, 35, 16, 66, 66, -1000, -1000, -1000,
+	-1000, 66, 66, 66, 66, 66, 66, 66, 66, 66,
+	66, 66, 66, 17, -1000, 49, 49, 49, -15, -15,
+	-15, -15, -10, -10, -1000, -1000, -1000, 35, -1000,
 }
 var yyPgo = [...]int{
 
-	0, 0, 38, 37, 28,
+	0, 0, 38, 30, 29,
 }
 var yyR1 = [...]int{
 
@@ -190,10 +193,10 @@ var yyR2 = [...]int{
 }
 var yyChk = [...]int{
 
-	-1000, -3, -4, -1, 5, 22, 12, -2, 4, 6,
-	21, 9, 10, 13, 14, 7, 8, 15, 16, 17,
-	18, 19, 11, -1, 5, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1, 23,
+	-1000, -3, -4, -1, 5, 23, 13, -2, 4, 6,
+	22, 9, 10, 14, 15, 7, 8, 16, 17, 18,
+	19, 20, 12, -1, 5, -1, -1, -1, -1, -1,
+	-1, -1, -1, -1, -1, -1, -1, -1, 24,
 }
 var yyDef = [...]int{
 
@@ -205,16 +208,17 @@ var yyDef = [...]int{
 var yyTok1 = [...]int{
 
 	1, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	21, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	22, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 12, 3, 3, 3, 19, 3, 3,
-	22, 23, 17, 15, 3, 16, 3, 18, 3, 3,
+	3, 3, 3, 13, 3, 3, 3, 20, 3, 3,
+	23, 24, 18, 16, 3, 17, 3, 19, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	14, 11, 13,
+	15, 12, 14,
 }
 var yyTok2 = [...]int{
 
-	2, 3, 4, 5, 6, 7, 8, 9, 10, 20,
+	2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+	21,
 }
 var yyTok3 = [...]int{
 	0,
@@ -559,109 +563,109 @@ yydefault:
 
 	case 3:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:50
+		//line parser/parser.y:51
 		{
 			fmt.Println(yyDollar[1].Void.GetText())
 		}
 	case 4:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:51
+		//line parser/parser.y:52
 		{
 			regs[yyDollar[1].Identifier.GetText()] = yyDollar[3].Void
 		}
 	case 5:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:55
+		//line parser/parser.y:56
 		{
 			yyVAL.Void = yyDollar[2].Void
 		}
 	case 6:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:56
+		//line parser/parser.y:57
 		{
 			yyVAL.Void = yyDollar[1].Void.Logic(yyDollar[3].Void, "&&")
 		}
 	case 7:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:57
+		//line parser/parser.y:58
 		{
 			yyVAL.Void = yyDollar[1].Void.Logic(yyDollar[3].Void, "||")
 		}
 	case 8:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line parser/parser.y:58
+		//line parser/parser.y:59
 		{
 			yyVAL.Void = yyDollar[2].Void.Logic(nil, "!")
 		}
 	case 9:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:59
+		//line parser/parser.y:60
 		{
 			yyVAL.Void = yyDollar[1].Void.Comp(yyDollar[3].Void, ">")
 		}
 	case 10:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:60
+		//line parser/parser.y:61
 		{
 			yyVAL.Void = yyDollar[1].Void.Comp(yyDollar[3].Void, "<")
 		}
 	case 11:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:61
+		//line parser/parser.y:62
 		{
 			yyVAL.Void = yyDollar[1].Void.Comp(yyDollar[3].Void, "==")
 		}
 	case 12:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:62
+		//line parser/parser.y:63
 		{
 			yyVAL.Void = yyDollar[1].Void.Comp(yyDollar[3].Void, "!=")
 		}
 	case 13:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:63
+		//line parser/parser.y:64
 		{
 			yyVAL.Void = yyDollar[1].Void.Calc(yyDollar[3].Void, "+")
 		}
 	case 14:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:64
+		//line parser/parser.y:65
 		{
 			yyVAL.Void = yyDollar[1].Void.Calc(yyDollar[3].Void, "-")
 		}
 	case 15:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:65
+		//line parser/parser.y:66
 		{
 			yyVAL.Void = yyDollar[1].Void.Calc(yyDollar[3].Void, "*")
 		}
 	case 16:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:66
+		//line parser/parser.y:67
 		{
 			yyVAL.Void = yyDollar[1].Void.Calc(yyDollar[3].Void, "/")
 		}
 	case 17:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line parser/parser.y:67
+		//line parser/parser.y:68
 		{
 			yyVAL.Void = yyDollar[1].Void.Calc(yyDollar[3].Void, "%")
 		}
 	case 19:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:72
+		//line parser/parser.y:73
 		{
 			yyVAL.Void = yyDollar[1].Number
 		}
 	case 20:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:73
+		//line parser/parser.y:74
 		{
 			yyVAL.Void = yyDollar[1].Bool
 		}
 	case 21:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:74
+		//line parser/parser.y:75
 		{
 			yyVAL.Void = regs[yyDollar[1].Identifier.GetText()]
 		}

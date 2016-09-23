@@ -30,8 +30,9 @@ var regs = make(map[string]lexer.Token)
 %token <Number> NUMBER
 %token <Identifier> IDENTIFIER
 %token <Bool> BOOL
-%token <Operator> T_EQUAL T_UNEQUAL T_LOGIC_AND T_LOGIC_OR
+%token <Operator> T_EQUAL T_UNEQUAL T_LOGIC_AND T_LOGIC_OR T_PRINT
 
+%left T_PRINT
 %left '='
 %left T_LOGIC_AND T_LOGIC_OR '!'
 %left '>' '<' T_EQUAL T_UNEQUAL
@@ -106,37 +107,37 @@ func (l *Lexer) Lex(lval *yySymType) int {
 
 	matchResult := l.Tokens[l.Pos]
 	l.Pos++
-	if matchResult[1] != "" {
+	if matchResult[2] != "" {
 		lval.Bool = lexer.BoolToken{
 			Line:  &lexer.Line{l.Pos},
-			Value: matchResult[1] == "true",
+			Value: matchResult[2] == "true",
 		}
 		return BOOL
-	} else if matchResult[2] != "" {
-		num, _ := strconv.Atoi(matchResult[2])
+	} else if matchResult[4] != "" {
+		num, _ := strconv.Atoi(matchResult[4])
 		lval.Number = lexer.NumToken{
 			Line:  &lexer.Line{l.Pos},
 			Value: num,
 		}
 		return NUMBER
-	} else if matchResult[4] != "" {
+	} else if matchResult[5] != "" {
 		lval.Identifier = lexer.IdToken{
 			Line: &lexer.Line{l.Pos},
-			Text: matchResult[4],
+			Text: matchResult[5],
 		}
 		return IDENTIFIER
-	} else if matchResult[6] != "" {
+	} else if matchResult[7] != "" {
 		lval.Operator = "=="
 		return T_EQUAL
-	} else if matchResult[7] != "" {
+	} else if matchResult[8] != "" {
 		lval.Operator = "!="
 		return T_UNEQUAL
-	} else if matchResult[8] != "" {
-		return int(matchResult[8][0])
 	} else if matchResult[9] != "" {
+		return int(matchResult[9][0])
+	} else if matchResult[10] != "" {
 		lval.Operator = "&&"
 		return T_LOGIC_AND
-	} else if matchResult[10] != "" {
+	} else if matchResult[11] != "" {
 		lval.Operator = "||"
 		return T_LOGIC_OR
 	}
