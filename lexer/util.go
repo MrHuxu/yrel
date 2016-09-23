@@ -13,9 +13,9 @@ func BuildLexerMatcher() *regexp.Regexp {
 	commentPattern := `(//[\S\s]*)`
 	equalPattern := `(==)`
 	unequalPattern := `(!=)`
-	opPattern := `(=|!|>|<|\+|-|\*|/|%)`
-	logicAndPattern := `(&&)`
-	logicOrPattern := `(||)`
+	opPattern := `(=|!|>|<|\+|-|\*|/|%|\(|\)|{|})`
+	logicAndPattern := `(\&\&)`
+	logicOrPattern := `(\|\|)`
 	pattern := boolPattern + "|" + numPattern + "|" + strPattern + "|" + idPattern + "|" + commentPattern + "|" + equalPattern + "|" + unequalPattern + "|" + opPattern + "|" + logicAndPattern + "|" + logicOrPattern
 
 	matcher, _ := regexp.Compile(pattern)

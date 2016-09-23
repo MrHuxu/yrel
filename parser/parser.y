@@ -24,7 +24,7 @@ var regs = make(map[string]lexer.Token)
 
 // any non-terminal which returns a value needs a type, which is
 // really a field name in the above union struct
-%type <Void> expr primary calc comp logic
+%type <Void> expr primary
 
 // same for terminals
 %token <Number> NUMBER
@@ -52,33 +52,19 @@ stat :
 ;
 
 expr :
-		calc												{ $$ = $1 }
-	| comp												{ $$ = $1 }
-	| logic												{ $$ = $1 }
-;
-
-logic :
-		'(' logic ')'               { $$ = $2 }
-	| comp T_LOGIC_AND comp       { $$ = $1.Logic($3, "&&") }
-	| comp T_LOGIC_OR comp        { $$ = $1.Logic($3, "||") }
-	| '!' comp       							{ $$ = $2.Logic(nil, "!") }
-	;
-
-comp :
-		'(' comp ')'								{ $$ = $2 }
-	| calc '>' calc               { $$ = $1.Comp($3, ">") }
-	| calc '<' calc               { $$ = $1.Comp($3, "<") }
-	| calc T_EQUAL calc           { $$ = $1.Comp($3, "==") }
-	| calc T_UNEQUAL calc         { $$ = $1.Comp($3, "!=") }
-	;
-
-calc :
-		'(' calc ')'  											{ $$  =  $2 }
-	| calc '+' calc												{ $$  =  $1.Calc($3, "+") }
-	| calc '-' calc												{ $$  =  $1.Calc($3, "-") }
-	| calc '*' calc												{ $$  =  $1.Calc($3, "*") }
-	| calc '/' calc												{ $$  =  $1.Calc($3, "/") }
-	| calc '%' calc												{ $$  =  $1.Calc($3, "%") }
+		'(' expr ')'  						  		{ $$  =  $2 }
+	| expr T_LOGIC_AND expr           { $$ = $1.Logic($3, "&&") }
+	| expr T_LOGIC_OR expr            { $$ = $1.Logic($3, "||") }
+	| '!' expr       							    { $$ = $2.Logic(nil, "!") }
+	| expr '>' expr                   { $$ = $1.Comp($3, ">") }
+	| expr '<' expr                   { $$ = $1.Comp($3, "<") }
+	| expr T_EQUAL expr               { $$ = $1.Comp($3, "==") }
+	| expr T_UNEQUAL expr             { $$ = $1.Comp($3, "!=") }
+	| expr '+' expr					    			{ $$  =  $1.Calc($3, "+") }
+	| expr '-' expr					    			{ $$  =  $1.Calc($3, "-") }
+	| expr '*' expr					    			{ $$  =  $1.Calc($3, "*") }
+	| expr '/' expr					    			{ $$  =  $1.Calc($3, "/") }
+	| expr '%' expr					    			{ $$  =  $1.Calc($3, "%") }
 	| primary  
 	;
 
