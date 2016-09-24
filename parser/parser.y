@@ -24,7 +24,7 @@ var regs = make(map[string]lexer.Token)
 
 // any non-terminal which returns a value needs a type, which is
 // really a field name in the above union struct
-%type <Void> expr primary
+%type <Void> expr primary stat
 
 // same for terminals
 %token <Number> NUMBER
@@ -44,12 +44,13 @@ var regs = make(map[string]lexer.Token)
 
 list	:
 		/* empty */
-	| list stat '\n'
+	| list stat '\n'              { fmt.Println(">", $2.GetText()) }
 ;
 
 stat :
-		expr 												{ fmt.Println($1.GetText()) }
-	| IDENTIFIER '=' expr					{ regs[$1.GetText()] = $3 }
+		expr 												{ $$ = $1 }
+	| T_PRINT expr								{ fmt.Println($2.GetText()); $$ = $2 }
+	| IDENTIFIER '=' expr					{ regs[$1.GetText()] = $3; $$ = $3 }
 ;
 
 expr :
@@ -113,6 +114,8 @@ func (l *Lexer) Lex(lval *yySymType) int {
 			Value: matchResult[2] == "true",
 		}
 		return BOOL
+	} else if matchResult[3] != "" {
+		return T_PRINT
 	} else if matchResult[4] != "" {
 		num, _ := strconv.Atoi(matchResult[4])
 		lval.Number = lexer.NumToken{

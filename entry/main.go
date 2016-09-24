@@ -31,13 +31,14 @@ func main() {
 	// fmt.Println(lexer.Read())
 	// fmt.Println(lexer.Read())
 
+	fmt.Println("Yrel 0.0.1  Copyright (C) 2016-2018 xhu.me, Xu Hu")
 	fi := bufio.NewReader(os.NewFile(0, "stdin"))
 
 	for {
 		var eqn string
 		var ok bool
 
-		fmt.Printf("equation: ")
+		fmt.Printf("> ")
 		if eqn, ok = readline(fi); ok {
 			parser.YyParse(&parser.Lexer{S: eqn})
 		} else {
