@@ -20,17 +20,19 @@ var regs = make(map[string]lexer.Token)
 	Number lexer.NumToken
 	Bool lexer.BoolToken
 	Operator string
+	StmtPrefix string
 }
 
 // any non-terminal which returns a value needs a type, which is
 // really a field name in the above union struct
-%type <Void> expr primary stat
+%type <Void> expr primary stat if_stmt
 
 // same for terminals
 %token <Number> NUMBER
 %token <Identifier> IDENTIFIER
 %token <Bool> BOOL
-%token <Operator> T_EQUAL T_UNEQUAL T_LOGIC_AND T_LOGIC_OR T_PRINT
+%token <Operator> T_EQUAL T_UNEQUAL T_LOGIC_AND T_LOGIC_OR
+%token <StmtPrefix> T_IF T_ELSE T_ELSIF T_WHILE T_PRINT
 
 %left T_PRINT
 %left '='
@@ -48,9 +50,19 @@ list	:
 ;
 
 stat :
-		expr 												{ $$ = $1 }
-	| T_PRINT expr								{ fmt.Println($2.GetText()); $$ = $2 }
-	| IDENTIFIER '=' expr					{ regs[$1.GetText()] = $3; $$ = $3 }
+		expr 														{ $$ = $1 }
+	| if_stmt													{ $$ = $1 }
+;
+
+if_stmt:
+		T_IF '(' expr ')' '{' expr '}' 
+			{
+				if ($3.True()) {
+					$$ = $6
+				} else {
+					$$ = lexer.Undefined
+				}
+			}
 ;
 
 expr :
@@ -68,8 +80,10 @@ expr :
 	| expr '*' expr					    			{ $$ = $1.Calc($3, "*") }
 	| expr '/' expr					    			{ $$ = $1.Calc($3, "/") }
 	| expr '%' expr					    			{ $$ = $1.Calc($3, "%") }
+	| T_PRINT expr										{ fmt.Println($2.GetText()); $$ = $2 }
+	| IDENTIFIER '=' expr					    { regs[$1.GetText()] = $3; $$ = $3 }
 	| primary  
-	;
+;
 
 primary :
 		NUMBER         { $$ = $1 }
@@ -94,6 +108,14 @@ type Lexer struct {
 	Pos     int
 	Started bool
 	Ended   bool
+}
+
+var mapStrToToken = map[string]int{
+	"if"    : T_IF,
+	"else"  : T_ELSE,
+	"elsif" : T_ELSIF,
+	"while" :T_WHILE,
+	"print" :T_PRINT,
 }
 
 func (l *Lexer) Lex(lval *yySymType) int {
@@ -125,7 +147,7 @@ func (l *Lexer) Lex(lval *yySymType) int {
 		}
 		return BOOL
 	} else if matchResult[3] != "" {
-		return T_PRINT
+		return mapStrToToken[matchResult[3]]
 	} else if matchResult[4] != "" {
 		num, _ := strconv.Atoi(matchResult[4])
 		lval.Number = lexer.NumToken{
