@@ -23,14 +23,6 @@ func readline(fi *bufio.Reader) (string, bool) {
 }
 
 func main() {
-	// file, err := os.Open("./test.yr")
-	// check(err)
-	// lexer := lexer.NewLexer(file)
-	// fmt.Println(lexer)
-	// fmt.Println(lexer.Read())
-	// fmt.Println(lexer.Read())
-	// fmt.Println(lexer.Read())
-
 	fmt.Println("Yrel 0.0.1  Copyright (C) 2016-2018 xhu.me, Xu Hu")
 	fi := bufio.NewReader(os.NewFile(0, "stdin"))
 
