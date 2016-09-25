@@ -5,7 +5,8 @@ type IdToken struct {
 	Text string
 }
 
-var EOF = &IdToken{&Line{-1}, ""}
+var EOF = &IdToken{&Line{-1}, "EOF"}
+var Undefined = &IdToken{&Line{-1}, "Undefined"}
 
 func (i IdToken) IsNumber() bool {
 	return false

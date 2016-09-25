@@ -64,7 +64,7 @@ const yyEofCode = 1
 const yyErrCode = 2
 const yyInitialStackSize = 16
 
-//line parser/parser.y:79
+//line parser/parser.y:88
 
 /*  start  of  programs  */
 
@@ -684,9 +684,15 @@ yydefault:
 		}
 	case 22:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:76
+		//line parser/parser.y:77
 		{
-			yyVAL.Void = regs[yyDollar[1].Identifier.GetText()]
+			tmp, exist := regs[yyDollar[1].Identifier.GetText()]
+			if exist {
+				yyVAL.Void = tmp
+			} else {
+				fmt.Println("Error:", "\""+yyDollar[1].Identifier.GetText()+"\"", "is undefined")
+				yyVAL.Void = lexer.Undefined
+			}
 		}
 	}
 	goto yystack /* stack new state and value */

@@ -73,7 +73,16 @@ expr :
 primary :
 		NUMBER         { $$ = $1 }
 	| BOOL 					 { $$ = $1 }
-	| IDENTIFIER     { $$ = regs[$1.GetText()] }
+	| IDENTIFIER
+		{
+			tmp, exist := regs[$1.GetText()]
+			if (exist) {
+				$$ = tmp
+			} else {
+				fmt.Println("Error:", "\"" + $1.GetText() + "\"", "is undefined")
+				$$ = lexer.Undefined
+			}
+		}
 	;
 
 %%      /*  start  of  programs  */

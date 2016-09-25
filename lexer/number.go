@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"fmt"
 	"strconv"
 )
 
@@ -33,26 +34,46 @@ func (n NumToken) True() bool {
 	return n.Value != 0
 }
 
-func (n NumToken) Calc(t Token, op string) Token {
+func mathCacl(num1 int, num2 int, op string) int {
 	var result int
-	num, _ := strconv.Atoi(t.GetText())
 	switch op {
 	case "+":
-		result = n.Value + num
+		result = num1 + num2
 	case "-":
-		result = n.Value - num
+		result = num1 - num2
 	case "*":
-		result = n.Value * num
+		result = num1 * num2
 	case "/":
-		result = n.Value / num
+		result = num1 / num2
 	case "%":
-		result = n.Value % num
+		result = num1 % num2
 	}
 
-	return NumToken{
+	return result
+}
+
+func getResultAndHandleError(result *NumToken, n NumToken, num int, op string) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println(r)
+			*result = NumToken{
+				Line:  n.Line,
+				Value: -1,
+			}
+		}
+	}()
+	*result = NumToken{
 		Line:  n.Line,
-		Value: result,
+		Value: mathCacl(n.Value, num, op),
 	}
+}
+
+func (n NumToken) Calc(t Token, op string) Token {
+	result := &NumToken{}
+	num, _ := strconv.Atoi(t.GetText())
+	getResultAndHandleError(result, n, num, op)
+
+	return *result
 }
 
 func (n NumToken) Comp(t Token, op string) Token {
