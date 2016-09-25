@@ -38,7 +38,12 @@ func (b BoolToken) GetText() string {
 }
 func (b BoolToken) Calc(t Token, op string) Token {
 	var result int
-	num, _ := strconv.Atoi(t.GetText())
+	var num int
+	if t != nil {
+		num, _ = strconv.Atoi(t.GetText())
+	} else {
+		num = 0
+	}
 	switch op {
 	case "+":
 		result = 0 + num

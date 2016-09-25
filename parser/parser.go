@@ -64,7 +64,7 @@ const yyEofCode = 1
 const yyErrCode = 2
 const yyInitialStackSize = 16
 
-//line parser/parser.y:88
+//line parser/parser.y:89
 
 /*  start  of  programs  */
 
@@ -149,66 +149,67 @@ var yyExca = [...]int{
 	-2, 0,
 }
 
-const yyNprod = 23
+const yyNprod = 24
 const yyPrivate = 57344
 
 var yyTokenNames []string
 var yyStates []string
 
-const yyLast = 96
+const yyLast = 108
 
 var yyAct = [...]int{
 
-	3, 20, 21, 22, 11, 23, 25, 26, 27, 1,
-	2, 8, 0, 28, 29, 30, 31, 32, 33, 34,
-	35, 36, 37, 38, 0, 0, 39, 16, 17, 12,
-	13, 0, 0, 0, 14, 15, 18, 19, 20, 21,
-	22, 0, 0, 0, 40, 16, 17, 12, 13, 0,
-	0, 0, 14, 15, 18, 19, 20, 21, 22, 16,
-	17, 18, 19, 20, 21, 22, 14, 15, 18, 19,
-	20, 21, 22, 9, 5, 10, 9, 24, 10, 0,
-	4, 0, 7, 0, 0, 7, 0, 0, 0, 0,
-	0, 0, 6, 0, 0, 6,
+	3, 21, 22, 23, 12, 24, 26, 27, 28, 29,
+	1, 2, 9, 0, 30, 31, 32, 33, 34, 35,
+	36, 37, 38, 39, 40, 0, 0, 41, 17, 18,
+	13, 14, 0, 0, 0, 15, 16, 19, 20, 21,
+	22, 23, 0, 0, 0, 42, 17, 18, 13, 14,
+	0, 0, 0, 15, 16, 19, 20, 21, 22, 23,
+	10, 5, 11, 0, 0, 0, 0, 4, 0, 7,
+	0, 0, 0, 8, 17, 18, 0, 0, 0, 6,
+	0, 15, 16, 19, 20, 21, 22, 23, 10, 25,
+	11, 19, 20, 21, 22, 23, 0, 7, 0, 0,
+	0, 8, 0, 0, 0, 0, 0, 6,
 }
 var yyPact = [...]int{
 
-	-1000, 69, -18, 38, 72, -6, 72, 72, -1000, -1000,
-	-1000, -1000, 72, 72, 72, 72, 72, 72, 72, 72,
-	72, 72, 72, 38, -1000, 72, 20, 52, 52, 52,
-	45, 45, 45, 45, -17, -17, -1000, -1000, -1000, 38,
-	-1000,
+	-1000, 56, -18, 39, 84, -6, 84, 84, 84, -1000,
+	-1000, -1000, -1000, 84, 84, 84, 84, 84, 84, 84,
+	84, 84, 84, 84, 39, -1000, 84, 21, 67, -17,
+	67, 67, 75, 75, 75, 75, -17, -17, -1000, -1000,
+	-1000, 39, -1000,
 }
 var yyPgo = [...]int{
 
-	0, 0, 11, 10, 9,
+	0, 0, 12, 11, 10,
 }
 var yyR1 = [...]int{
 
 	0, 4, 4, 3, 3, 3, 1, 1, 1, 1,
 	1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	2, 2, 2,
+	1, 2, 2, 2,
 }
 var yyR2 = [...]int{
 
 	0, 0, 3, 1, 2, 3, 3, 3, 3, 2,
-	3, 3, 3, 3, 3, 3, 3, 3, 3, 1,
-	1, 1, 1,
+	3, 3, 3, 3, 3, 3, 2, 3, 3, 3,
+	1, 1, 1, 1,
 }
 var yyChk = [...]int{
 
-	-1000, -4, -3, -1, 11, 5, 23, 13, -2, 4,
-	6, 22, 9, 10, 14, 15, 7, 8, 16, 17,
-	18, 19, 20, -1, 5, 12, -1, -1, -1, -1,
+	-1000, -4, -3, -1, 11, 5, 23, 13, 17, -2,
+	4, 6, 22, 9, 10, 14, 15, 7, 8, 16,
+	17, 18, 19, 20, -1, 5, 12, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-	24,
+	-1, -1, 24,
 }
 var yyDef = [...]int{
 
-	1, -2, 0, 3, 0, 22, 0, 0, 19, 20,
-	21, 2, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 4, 22, 0, 0, 9, 7, 8,
-	10, 11, 12, 13, 14, 15, 16, 17, 18, 5,
-	6,
+	1, -2, 0, 3, 0, 23, 0, 0, 0, 20,
+	21, 22, 2, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 4, 23, 0, 0, 9, 16,
+	7, 8, 10, 11, 12, 13, 14, 15, 17, 18,
+	19, 5, 6,
 }
 var yyTok1 = [...]int{
 
@@ -653,38 +654,44 @@ yydefault:
 			yyVAL.Void = yyDollar[1].Void.Calc(yyDollar[3].Void, "-")
 		}
 	case 16:
-		yyDollar = yyS[yypt-3 : yypt+1]
+		yyDollar = yyS[yypt-2 : yypt+1]
 		//line parser/parser.y:67
 		{
-			yyVAL.Void = yyDollar[1].Void.Calc(yyDollar[3].Void, "*")
+			yyVAL.Void = yyDollar[2].Void.Calc(nil, "Neg")
 		}
 	case 17:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		//line parser/parser.y:68
 		{
-			yyVAL.Void = yyDollar[1].Void.Calc(yyDollar[3].Void, "/")
+			yyVAL.Void = yyDollar[1].Void.Calc(yyDollar[3].Void, "*")
 		}
 	case 18:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		//line parser/parser.y:69
 		{
-			yyVAL.Void = yyDollar[1].Void.Calc(yyDollar[3].Void, "%")
+			yyVAL.Void = yyDollar[1].Void.Calc(yyDollar[3].Void, "/")
 		}
-	case 20:
-		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:74
+	case 19:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		//line parser/parser.y:70
 		{
-			yyVAL.Void = yyDollar[1].Number
+			yyVAL.Void = yyDollar[1].Void.Calc(yyDollar[3].Void, "%")
 		}
 	case 21:
 		yyDollar = yyS[yypt-1 : yypt+1]
 		//line parser/parser.y:75
 		{
-			yyVAL.Void = yyDollar[1].Bool
+			yyVAL.Void = yyDollar[1].Number
 		}
 	case 22:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line parser/parser.y:77
+		//line parser/parser.y:76
+		{
+			yyVAL.Void = yyDollar[1].Bool
+		}
+	case 23:
+		yyDollar = yyS[yypt-1 : yypt+1]
+		//line parser/parser.y:78
 		{
 			tmp, exist := regs[yyDollar[1].Identifier.GetText()]
 			if exist {

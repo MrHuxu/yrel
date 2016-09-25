@@ -34,13 +34,15 @@ func (n NumToken) True() bool {
 	return n.Value != 0
 }
 
-func mathCacl(num1 int, num2 int, op string) int {
+func execCalc(num1 int, num2 int, op string) int {
 	var result int
 	switch op {
 	case "+":
 		result = num1 + num2
 	case "-":
 		result = num1 - num2
+	case "Neg":
+		result = 0 - num1
 	case "*":
 		result = num1 * num2
 	case "/":
@@ -64,13 +66,18 @@ func getResultAndHandleError(result *NumToken, n NumToken, num int, op string) {
 	}()
 	*result = NumToken{
 		Line:  n.Line,
-		Value: mathCacl(n.Value, num, op),
+		Value: execCalc(n.Value, num, op),
 	}
 }
 
 func (n NumToken) Calc(t Token, op string) Token {
 	result := &NumToken{}
-	num, _ := strconv.Atoi(t.GetText())
+	var num int
+	if t != nil {
+		num, _ = strconv.Atoi(t.GetText())
+	} else {
+		num = -1
+	}
 	getResultAndHandleError(result, n, num, op)
 
 	return *result

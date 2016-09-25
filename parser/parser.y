@@ -64,6 +64,7 @@ expr :
 	| expr T_UNEQUAL expr             { $$ = $1.Comp($3, "!=") }
 	| expr '+' expr					    			{ $$ = $1.Calc($3, "+") }
 	| expr '-' expr					    			{ $$ = $1.Calc($3, "-") }
+	| '-' expr 												{ $$ = $2.Calc(nil, "Neg") }
 	| expr '*' expr					    			{ $$ = $1.Calc($3, "*") }
 	| expr '/' expr					    			{ $$ = $1.Calc($3, "/") }
 	| expr '%' expr					    			{ $$ = $1.Calc($3, "%") }
