@@ -1,109 +1,54 @@
-package yrel
+package parser
 
 import (
 	_ "fmt"
 	"github.com/MrHuxu/yrel/lexer"
-	"strconv"
 )
 
 type ASTree interface {
-	Child(i int) ASTree
-	NumChildren() int
-	Location() string
-	ToString() string
+	Execute() ASTLeaf
 }
 
 type ASTLeaf struct {
 	Token lexer.Token
 }
 
-func (leaf ASTLeaf) Child(i int) ASTree {
-	return nil
+func (leaf ASTLeaf) Execute() ASTLeaf {
+	return leaf
 }
 
-func (leaf ASTLeaf) NumChildren() int {
-	return 0
+type CalcExpr struct {
+	Left  ASTree
+	Right ASTree
+	Op    string
 }
 
-func (leaf ASTLeaf) Location() string {
-	return "at line " + string(leaf.Token.GetLineNumber())
-}
-
-func (leaf ASTLeaf) ToString() string {
-	return leaf.Token.GetText()
-}
-
-type ASTList struct {
-	Children []ASTree
-}
-
-func (list ASTList) Child(i int) ASTree {
-	return list.Children[i]
-}
-
-func (list ASTList) NumChildren() int {
-	return cap(list.Children)
-}
-
-func (list ASTList) Location() string {
-	for _, child := range list.Children {
-		if child.Location() != "" {
-			return child.Location()
-		}
+func (c CalcExpr) Execute() ASTLeaf {
+	return ASTLeaf{
+		Token: c.Left.Execute().Token.Calc(c.Right.Execute().Token, c.Op),
 	}
-	return ""
 }
 
-func (list ASTList) ToString() string {
-	result := "( "
-	for _, child := range list.Children {
-		result = result + child.ToString()
+type CompExpr struct {
+	Left  ASTree
+	Right ASTree
+	Op    string
+}
+
+func (c CompExpr) Execute() ASTLeaf {
+	return ASTLeaf{
+		Token: c.Left.Execute().Token.Comp(c.Right.Execute().Token, c.Op),
 	}
-	result = result + " )"
-	return result
 }
 
-type NumberLiteral struct {
-	*ASTLeaf
+type LogicExpr struct {
+	Left  ASTree
+	Right ASTree
+	Op    string
 }
 
-func (n NumberLiteral) Value() int {
-	num, _ := strconv.Atoi(n.Token.GetText())
-	return num
-}
-
-func NewNumberLiteral(t lexer.Token) *NumberLiteral {
-	return &NumberLiteral{&ASTLeaf{t}}
-}
-
-type Name struct {
-	*ASTLeaf
-}
-
-func (n Name) Value() string {
-	return n.Token.GetText()
-}
-
-func NewName(t lexer.Token) *Name {
-	return &Name{&ASTLeaf{t}}
-}
-
-type BinaryExpr struct {
-	*ASTList
-}
-
-func (b BinaryExpr) Left() ASTree {
-	return b.Children[0]
-}
-
-func (b BinaryExpr) Right() ASTree {
-	return b.Children[2]
-}
-
-func (b BinaryExpr) Operator() string {
-	return b.Children[1].ToString()
-}
-
-func NewBinaryExpr(t []ASTree) *BinaryExpr {
-	return &BinaryExpr{&ASTList{t}}
+func (l LogicExpr) Execute() ASTLeaf {
+	return ASTLeaf{
+		Token: l.Left.Execute().Token.Logic(l.Right.Execute().Token, l.Op),
+	}
 }

@@ -21,11 +21,12 @@ var regs = make(map[string]lexer.Token)
 	Bool lexer.BoolToken
 	Operator string
 	StmtPrefix string
+	AST ASTree
 }
 
 // any non-terminal which returns a value needs a type, which is
 // really a field name in the above union struct
-%type <Void> expr primary stat if_stmt
+%type <AST> expr primary stat
 
 // same for terminals
 %token <Number> NUMBER
@@ -46,58 +47,34 @@ var regs = make(map[string]lexer.Token)
 
 list	:
 		/* empty */
-	| list stat '\n'              { fmt.Println(">", $2.GetText()) }
+	| list stat '\n'              { fmt.Println(">", $2.Execute().Token.GetText()) }
 ;
 
 stat :
 		expr 														{ $$ = $1 }
-	| if_stmt													{ $$ = $1 }
-;
-
-if_stmt:
-		T_IF '(' expr ')' '{' expr '}' 
-			{
-				if ($3.True()) {
-					$$ = $6
-				} else {
-					$$ = lexer.Undefined
-				}
-			}
 ;
 
 expr :
 		'(' expr ')'  						  		{ $$  =  $2 }
-	| expr T_LOGIC_AND expr           { $$ = $1.Logic($3, "&&") }
-	| expr T_LOGIC_OR expr            { $$ = $1.Logic($3, "||") }
-	| '!' expr       							    { $$ = $2.Logic(nil, "!") }
-	| expr '>' expr                   { $$ = $1.Comp($3, ">") }
-	| expr '<' expr                   { $$ = $1.Comp($3, "<") }
-	| expr T_EQUAL expr               { $$ = $1.Comp($3, "==") }
-	| expr T_UNEQUAL expr             { $$ = $1.Comp($3, "!=") }
-	| expr '+' expr					    			{ $$ = $1.Calc($3, "+") }
-	| expr '-' expr					    			{ $$ = $1.Calc($3, "-") }
-	| '-' expr 												{ $$ = $2.Calc(nil, "Neg") }
-	| expr '*' expr					    			{ $$ = $1.Calc($3, "*") }
-	| expr '/' expr					    			{ $$ = $1.Calc($3, "/") }
-	| expr '%' expr					    			{ $$ = $1.Calc($3, "%") }
-	| T_PRINT expr										{ fmt.Println($2.GetText()); $$ = $2 }
-	| IDENTIFIER '=' expr					    { regs[$1.GetText()] = $3; $$ = $3 }
+	| expr T_LOGIC_AND expr           { $$ = LogicExpr{$1, $3, "&&"} }
+	| expr T_LOGIC_OR expr            { $$ = LogicExpr{$1, $3, "||"} }
+	| '!' expr       							    { $$ = LogicExpr{$2, nil, "!"} }
+	| expr '>' expr                   { $$ = CompExpr{$1, $3, ">"} }
+	| expr '<' expr                   { $$ = CompExpr{$1, $3, "<"} }
+	| expr T_EQUAL expr               { $$ = CompExpr{$1, $3, "=="} }
+	| expr T_UNEQUAL expr             { $$ = CompExpr{$1, $3, "!="} }
+	| expr '+' expr					    			{ $$ = CalcExpr{$1, $3, "+"} }
+	| expr '-' expr					    			{ $$ = CalcExpr{$1, $3, "-"} }
+	| '-' expr 												{ $$ = CalcExpr{$2, nil, "Neg"} }
+	| expr '*' expr					    			{ $$ = CalcExpr{$1, $3, "*"} }
+	| expr '/' expr					    			{ $$ = CalcExpr{$1, $3, "/"} }
+	| expr '%' expr					    			{ $$ = CalcExpr{$1, $3, "%"} }
 	| primary  
 ;
 
 primary :
-		NUMBER         { $$ = $1 }
-	| BOOL 					 { $$ = $1 }
-	| IDENTIFIER
-		{
-			tmp, exist := regs[$1.GetText()]
-			if (exist) {
-				$$ = tmp
-			} else {
-				fmt.Println("Error:", "\"" + $1.GetText() + "\"", "is undefined")
-				$$ = lexer.Undefined
-			}
-		}
+		NUMBER         { $$ = ASTLeaf{$1} }
+	| BOOL 					 { $$ = ASTLeaf{$1} }
 	;
 
 %%      /*  start  of  programs  */
