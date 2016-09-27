@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-var regs = make(map[string]lexer.Token)
+var Regs = make(map[string]lexer.Token)
 
 %}
 
@@ -69,12 +69,24 @@ expr :
 	| expr '*' expr					    			{ $$ = CalcExpr{$1, $3, "*"} }
 	| expr '/' expr					    			{ $$ = CalcExpr{$1, $3, "/"} }
 	| expr '%' expr					    			{ $$ = CalcExpr{$1, $3, "%"} }
+	| T_PRINT expr										{ $$ = PrintExpr{nil, $2, "print"} }
+	| IDENTIFIER '=' expr             { $$ = DefExpr{$1, $3, "="} }
 	| primary  
 ;
 
 primary :
 		NUMBER         { $$ = ASTLeaf{$1} }
 	| BOOL 					 { $$ = ASTLeaf{$1} }
+	| IDENTIFIER
+			{
+				tmp, exist := Regs[$1.GetText()]
+				if (exist) {
+					$$ = ASTLeaf{tmp}
+				} else {
+					fmt.Println("Error:", "\"" + $1.GetText() + "\"", "is undefined")
+					$$ = ASTLeaf{lexer.Undefined}
+				}
+			}
 	;
 
 %%      /*  start  of  programs  */

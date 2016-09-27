@@ -1,7 +1,7 @@
 package parser
 
 import (
-	_ "fmt"
+	"fmt"
 	"github.com/MrHuxu/yrel/lexer"
 )
 
@@ -50,5 +50,35 @@ type LogicExpr struct {
 func (l LogicExpr) Execute() ASTLeaf {
 	return ASTLeaf{
 		Token: l.Left.Execute().Token.Logic(l.Right.Execute().Token, l.Op),
+	}
+}
+
+type PrintExpr struct {
+	Left  ASTree
+	Right ASTree
+	Op    string
+}
+
+func (p PrintExpr) Execute() ASTLeaf {
+	t := p.Right.Execute().Token
+	fmt.Println(t.GetText())
+	return ASTLeaf{
+		Token: t,
+	}
+}
+
+type DefExpr struct {
+	Left  lexer.IdToken
+	Right ASTree
+	Op    string
+}
+
+func (d DefExpr) Execute() ASTLeaf {
+	name := d.Left
+	value := d.Right.Execute().Token
+	Regs[name.GetText()] = value
+
+	return ASTLeaf{
+		Token: value,
 	}
 }
