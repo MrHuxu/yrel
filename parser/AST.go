@@ -97,6 +97,21 @@ func (i IfExpr) Execute() ASTLeaf {
 	}
 }
 
+type WhileExpr struct {
+	Condition ASTree
+	Stat      ASTree
+}
+
+func (w WhileExpr) Execute() ASTLeaf {
+	var t lexer.Token
+
+	for w.Condition.Execute().Token.True() {
+		t = w.Stat.Execute().Token
+	}
+
+	return ASTLeaf{t}
+}
+
 type IdExpr struct {
 	Id lexer.IdToken
 }

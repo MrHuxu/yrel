@@ -35,7 +35,12 @@ func main() {
 		"print b;\n" +
 		"print a / 0;\n" +
 		"c = 4;\n" +
-		"print c / 0;"
+		"c = c - 1;\n" +
+		"while (c > 0) {\n" +
+		"print c;\n" +
+		"c = c - 1;\n" +
+		"}" +
+		"print c;"
 	parser.YyParse(&parser.Lexer{S: input})
 	for _, stat := range parser.Statements {
 		stat.Execute()

@@ -28,7 +28,7 @@ var Statements []ASTree
 
 // any non-terminal which returns a value needs a type, which is
 // really a field name in the above union struct
-%type <AST> expr primary stat if_stmt 
+%type <AST> expr primary stat if_stmt while_stmt
 %type <ExprList> expr_list
 
 // same for terminals
@@ -56,6 +56,7 @@ program	:
 stat :
 		expr_list ';'										{ $$ = $1 }
 	| if_stmt													{ $$ = $1 }
+	| while_stmt											{ $$ = $1 }
 ;
 
 if_stmt :
@@ -63,10 +64,14 @@ if_stmt :
 	| T_IF '(' expr_list ')' '{' stat '}' T_ELSE '{' stat '}' 		{ $$ = IfExpr{$3, $6, $10} }
 ;
 
+while_stmt :
+		T_WHILE '(' expr_list ')' '{' stat '}'			{ $$ = WhileExpr{$3, $6 } }
+;
+
 expr_list:
 		expr														{ $$ = ExprList{[]ASTree{$1}} }
 	| expr_list ';' expr							{ $1.List = append($1.List, $3); $$ = $1 }
-	;
+;
 
 expr :
 		'(' expr ')'  						  		{ $$  =  $2 }
@@ -92,7 +97,7 @@ primary :
 		NUMBER         { $$ = ASTLeaf{$1} }
 	| BOOL 					 { $$ = ASTLeaf{$1} }
 	| IDENTIFIER		 { $$ = IdExpr{$1} }
-	;
+;
 
 %%      /*  start  of  programs  */
 
