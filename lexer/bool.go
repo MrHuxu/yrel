@@ -41,7 +41,7 @@ func (b BoolToken) GetText() string {
 func (b BoolToken) getResultAndHandleError(result *NumToken, n BoolToken, num int, op string) {
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Println(r)
+			fmt.Printf("%s ", r)
 			*result = NumToken{
 				Line:  n.Line,
 				Value: -1,

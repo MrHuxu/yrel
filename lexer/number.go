@@ -37,7 +37,7 @@ func (n NumToken) True() bool {
 func (nu NumToken) getResultAndHandleError(result *NumToken, n NumToken, num int, op string) {
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Println(r)
+			fmt.Printf("%s ", r)
 			*result = NumToken{
 				Line:  n.Line,
 				Value: -1,
