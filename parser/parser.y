@@ -48,17 +48,17 @@ var Statements []ASTree
 
 program	:
 		/* empty */
-	| program stat '\n'               { Statements = append(Statements, $2) }
+	| program stat               			{ Statements = append(Statements, $2) }
 ;
 
 stat :
-		expr 														{ $$ = $1 }
+		expr ';'												{ $$ = $1 }
 	| if_stmt													{ $$ = $1 }
 ;
 
 if_stmt :
-		T_IF '(' stat ')' '{' stat '}'  											{ $$ = IfExpr{$3, $6, nil} }
-	| T_IF '(' stat ')' '{' stat '}' T_ELSE '{' stat '}' 		{ $$ = IfExpr{$3, $6, $10} }
+		T_IF '(' expr ')' '{' stat '}'  											{ $$ = IfExpr{$3, $6, nil} }
+	| T_IF '(' expr ')' '{' stat '}' T_ELSE '{' stat '}' 		{ $$ = IfExpr{$3, $6, $10} }
 ;
 
 expr :
@@ -112,7 +112,7 @@ func (l *Lexer) Lex(lval *yySymType) int {
 		l.Started = true
 	}
 
-	for l.Pos < len(l.Tokens) && l.Tokens[l.Pos][0] == "" {
+	for l.Pos < len(l.Tokens) && (l.Tokens[l.Pos][0] == "" || l.Tokens[l.Pos][0] == "\n") {
 		l.Pos++
 	}
 
@@ -121,15 +121,13 @@ func (l *Lexer) Lex(lval *yySymType) int {
 			return 0
 		} else {
 			l.Ended = true
-			return int('\n')
+			return 0
 		}
 	}
 
 	matchResult := l.Tokens[l.Pos]
 	l.Pos++
-	if matchResult[0] == "\n" {
-		return int('\n')
-	} else if matchResult[3] != "" {
+	if matchResult[3] != "" {
 		lval.Bool = lexer.BoolToken{
 			Line:  &lexer.Line{l.Pos},
 			Value: matchResult[3] == "true",

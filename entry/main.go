@@ -24,8 +24,12 @@ func check(e error) {
 
 func main() {
 	fmt.Println("Yrel 0.0.1  Copyright (C) 2016-2018 xhu.me, Xu Hu")
-	var input = "a = 1\n" +
-		"print a"
+	var input = "a = !true; b = false;\n" +
+		"if (3 > 1) {\n" +
+		"print a;\n" +
+		"} else {\n" +
+		"print b;\n" +
+		"}"
 	parser.YyParse(&parser.Lexer{S: input})
 	for _, stat := range parser.Statements {
 		stat.Execute()

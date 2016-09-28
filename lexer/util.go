@@ -18,7 +18,7 @@ func BuildLexerMatcher() *regexp.Regexp {
 		`(//[\S\s]*)`,                 // for comment
 		`(==)`,                        // for ==
 		`(!=)`,                        // for !=
-		`(=|!|>|<|\+|-|\*|/|%|\(|\)|{|})`, // for some operators
+		`(=|!|>|<|\+|-|\*|/|%|\(|\)|{|}|;)`, // for some operators
 		`(\&\&)`, // for &&
 		`(\|\|)`, // for ||
 	}
