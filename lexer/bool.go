@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"fmt"
 	"strconv"
 )
 
@@ -36,31 +37,34 @@ func (b BoolToken) GetText() string {
 		return "false"
 	}
 }
+
+func (b BoolToken) getResultAndHandleError(result *NumToken, n BoolToken, num int, op string) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println(r)
+			*result = NumToken{
+				Line:  n.Line,
+				Value: -1,
+			}
+		}
+	}()
+	*result = NumToken{
+		Line:  n.Line,
+		Value: ExecCalc(0, num, op),
+	}
+}
+
 func (b BoolToken) Calc(t Token, op string) Token {
-	var result int
+	result := &NumToken{}
 	var num int
 	if t != nil {
 		num, _ = strconv.Atoi(t.GetText())
 	} else {
-		num = 0
+		num = -1
 	}
-	switch op {
-	case "+":
-		result = 0 + num
-	case "-":
-		result = 0 - num
-	case "*":
-		result = 0 * num
-	case "/":
-		result = 0 / num
-	case "%":
-		result = 0 % num
-	}
+	b.getResultAndHandleError(result, b, num, op)
 
-	return NumToken{
-		Line:  b.Line,
-		Value: result,
-	}
+	return *result
 }
 
 func (b BoolToken) Comp(t Token, op string) Token {

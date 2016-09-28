@@ -114,3 +114,24 @@ func (i IdExpr) Execute() ASTLeaf {
 
 	return l
 }
+
+type ExprList struct {
+	List []ASTree
+}
+
+func (e ExprList) Execute() ASTLeaf {
+	var l ASTLeaf
+
+	if len(e.List) > 0 {
+		for i, v := range e.List {
+			t := v.Execute()
+			if i == len(e.List)-1 {
+				l = t
+			}
+		}
+	} else {
+		l = ASTLeaf{lexer.Undefined}
+	}
+
+	return l
+}

@@ -34,27 +34,7 @@ func (n NumToken) True() bool {
 	return n.Value != 0
 }
 
-func execCalc(num1 int, num2 int, op string) int {
-	var result int
-	switch op {
-	case "+":
-		result = num1 + num2
-	case "-":
-		result = num1 - num2
-	case "Neg":
-		result = 0 - num1
-	case "*":
-		result = num1 * num2
-	case "/":
-		result = num1 / num2
-	case "%":
-		result = num1 % num2
-	}
-
-	return result
-}
-
-func getResultAndHandleError(result *NumToken, n NumToken, num int, op string) {
+func (nu NumToken) getResultAndHandleError(result *NumToken, n NumToken, num int, op string) {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println(r)
@@ -66,7 +46,7 @@ func getResultAndHandleError(result *NumToken, n NumToken, num int, op string) {
 	}()
 	*result = NumToken{
 		Line:  n.Line,
-		Value: execCalc(n.Value, num, op),
+		Value: ExecCalc(n.Value, num, op),
 	}
 }
 
@@ -78,7 +58,7 @@ func (n NumToken) Calc(t Token, op string) Token {
 	} else {
 		num = -1
 	}
-	getResultAndHandleError(result, n, num, op)
+	n.getResultAndHandleError(result, n, num, op)
 
 	return *result
 }

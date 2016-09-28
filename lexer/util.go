@@ -7,7 +7,6 @@ import (
 )
 
 func BuildLexerMatcher() *regexp.Regexp {
-
 	patterns := []string{
 		`(\n)`,                        // for line break
 		`(\"[\S\s]*\")`,               // for string
@@ -25,4 +24,24 @@ func BuildLexerMatcher() *regexp.Regexp {
 
 	matcher, _ := regexp.Compile(strings.Join(patterns, "|"))
 	return matcher
+}
+
+func ExecCalc(num1 int, num2 int, op string) int {
+	var result int
+	switch op {
+	case "+":
+		result = num1 + num2
+	case "-":
+		result = num1 - num2
+	case "Neg":
+		result = 0 - num1
+	case "*":
+		result = num1 * num2
+	case "/":
+		result = num1 / num2
+	case "%":
+		result = num1 % num2
+	}
+
+	return result
 }

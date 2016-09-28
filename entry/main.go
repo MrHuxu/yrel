@@ -27,11 +27,15 @@ func main() {
 	var input = "a = !true; b = false;\n" +
 		"if (3 > 1) {\n" +
 		"print a;\n" +
+		"print 5;\n" +
 		"} else {\n" +
 		"print b;\n" +
 		"}" +
 		"b = 3 + 1;\n" +
-		"print b;"
+		"print b;\n" +
+		"print a / 0;\n" +
+		"c = 4;\n" +
+		"print c / 0;"
 	parser.YyParse(&parser.Lexer{S: input})
 	for _, stat := range parser.Statements {
 		stat.Execute()

@@ -23,11 +23,13 @@ var Statements []ASTree
 	Operator string
 	StmtPrefix string
 	AST ASTree
+	ExprList ExprList
 }
 
 // any non-terminal which returns a value needs a type, which is
 // really a field name in the above union struct
-%type <AST> expr primary stat if_stmt
+%type <AST> expr primary stat if_stmt 
+%type <ExprList> expr_list
 
 // same for terminals
 %token <Number> NUMBER
@@ -52,14 +54,19 @@ program	:
 ;
 
 stat :
-		expr ';'												{ $$ = $1 }
+		expr_list ';'										{ $$ = $1 }
 	| if_stmt													{ $$ = $1 }
 ;
 
 if_stmt :
-		T_IF '(' expr ')' '{' stat '}'  											{ $$ = IfExpr{$3, $6, nil} }
-	| T_IF '(' expr ')' '{' stat '}' T_ELSE '{' stat '}' 		{ $$ = IfExpr{$3, $6, $10} }
+		T_IF '(' expr_list ')' '{' stat '}'  												{ $$ = IfExpr{$3, $6, nil} }
+	| T_IF '(' expr_list ')' '{' stat '}' T_ELSE '{' stat '}' 		{ $$ = IfExpr{$3, $6, $10} }
 ;
+
+expr_list:
+		expr														{ $$ = ExprList{[]ASTree{$1}} }
+	| expr_list ';' expr							{ $1.List = append($1.List, $3); $$ = $1 }
+	;
 
 expr :
 		'(' expr ')'  						  		{ $$  =  $2 }
