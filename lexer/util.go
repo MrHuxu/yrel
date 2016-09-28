@@ -9,6 +9,7 @@ import (
 func BuildLexerMatcher() *regexp.Regexp {
 
 	patterns := []string{
+		`(\n)`,                        // for line break
 		`(\"[\S\s]*\")`,               // for string
 		`(true|false)`,                // for bool
 		`(if|else|elsif|while|print)`, // for built-in statement

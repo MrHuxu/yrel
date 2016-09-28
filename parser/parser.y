@@ -9,6 +9,7 @@ import (
 )
 
 var Regs = make(map[string]lexer.Token)
+var Statements []ASTree
 
 %}
 
@@ -47,7 +48,7 @@ var Regs = make(map[string]lexer.Token)
 
 program	:
 		/* empty */
-	| program stat '\n'              { fmt.Println(">", $2.Execute().Token.GetText()) }
+	| program stat '\n'               { Statements = append(Statements, $2) }
 ;
 
 stat :
@@ -83,16 +84,7 @@ expr :
 primary :
 		NUMBER         { $$ = ASTLeaf{$1} }
 	| BOOL 					 { $$ = ASTLeaf{$1} }
-	| IDENTIFIER
-			{
-				tmp, exist := Regs[$1.GetText()]
-				if (exist) {
-					$$ = ASTLeaf{tmp}
-				} else {
-					fmt.Println("Error:", "\"" + $1.GetText() + "\"", "is undefined")
-					$$ = ASTLeaf{lexer.Undefined}
-				}
-			}
+	| IDENTIFIER		 { $$ = IdExpr{$1} }
 	;
 
 %%      /*  start  of  programs  */
@@ -135,39 +127,41 @@ func (l *Lexer) Lex(lval *yySymType) int {
 
 	matchResult := l.Tokens[l.Pos]
 	l.Pos++
-	if matchResult[2] != "" {
+	if matchResult[0] == "\n" {
+		return int('\n')
+	} else if matchResult[3] != "" {
 		lval.Bool = lexer.BoolToken{
 			Line:  &lexer.Line{l.Pos},
-			Value: matchResult[2] == "true",
+			Value: matchResult[3] == "true",
 		}
 		return BOOL
-	} else if matchResult[3] != "" {
-		return mapStrToToken[matchResult[3]]
 	} else if matchResult[4] != "" {
-		num, _ := strconv.Atoi(matchResult[4])
+		return mapStrToToken[matchResult[4]]
+	} else if matchResult[5] != "" {
+		num, _ := strconv.Atoi(matchResult[5])
 		lval.Number = lexer.NumToken{
 			Line:  &lexer.Line{l.Pos},
 			Value: num,
 		}
 		return NUMBER
-	} else if matchResult[5] != "" {
+	} else if matchResult[6] != "" {
 		lval.Identifier = lexer.IdToken{
 			Line: &lexer.Line{l.Pos},
-			Text: matchResult[5],
+			Text: matchResult[6],
 		}
 		return IDENTIFIER
-	} else if matchResult[7] != "" {
+	} else if matchResult[8] != "" {
 		lval.Operator = "=="
 		return T_EQUAL
-	} else if matchResult[8] != "" {
+	} else if matchResult[9] != "" {
 		lval.Operator = "!="
 		return T_UNEQUAL
-	} else if matchResult[9] != "" {
-		return int(matchResult[9][0])
 	} else if matchResult[10] != "" {
+		return int(matchResult[10][0])
+	} else if matchResult[11] != "" {
 		lval.Operator = "&&"
 		return T_LOGIC_AND
-	} else if matchResult[11] != "" {
+	} else if matchResult[12] != "" {
 		lval.Operator = "||"
 		return T_LOGIC_OR
 	}

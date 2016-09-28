@@ -96,3 +96,21 @@ func (i IfExpr) Execute() ASTLeaf {
 		}
 	}
 }
+
+type IdExpr struct {
+	Id lexer.IdToken
+}
+
+func (i IdExpr) Execute() ASTLeaf {
+	tmp, exist := Regs[i.Id.GetText()]
+	var l ASTLeaf
+
+	if exist {
+		l = ASTLeaf{tmp}
+	} else {
+		fmt.Println("Error:", "\""+i.Id.GetText()+"\"", "is undefined")
+		l = ASTLeaf{lexer.Undefined}
+	}
+
+	return l
+}
