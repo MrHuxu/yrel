@@ -45,9 +45,9 @@ var Regs = make(map[string]lexer.Token)
 
 %%
 
-list	:
+program	:
 		/* empty */
-	| list stat '\n'              { fmt.Println(">", $2.Execute().Token.GetText()) }
+	| program stat '\n'              { fmt.Println(">", $2.Execute().Token.GetText()) }
 ;
 
 stat :
@@ -56,21 +56,22 @@ stat :
 ;
 
 if_stmt :
-		T_IF '(' expr ')' '{' expr '}'  { $$ = IfExpr{$3, $6, nil} }
+		T_IF '(' stat ')' '{' stat '}'  											{ $$ = IfExpr{$3, $6, nil} }
+	| T_IF '(' stat ')' '{' stat '}' T_ELSE '{' stat '}' 		{ $$ = IfExpr{$3, $6, $10} }
 ;
 
 expr :
 		'(' expr ')'  						  		{ $$  =  $2 }
 	| expr T_LOGIC_AND expr           { $$ = LogicExpr{$1, $3, "&&"} }
 	| expr T_LOGIC_OR expr            { $$ = LogicExpr{$1, $3, "||"} }
-	| '!' expr       							    { $$ = LogicExpr{$2, nil, "!"} }
+	| '!' expr       							    { $$ = LogicExpr{$2, ASTLeaf{nil}, "!"} }
 	| expr '>' expr                   { $$ = CompExpr{$1, $3, ">"} }
 	| expr '<' expr                   { $$ = CompExpr{$1, $3, "<"} }
 	| expr T_EQUAL expr               { $$ = CompExpr{$1, $3, "=="} }
 	| expr T_UNEQUAL expr             { $$ = CompExpr{$1, $3, "!="} }
 	| expr '+' expr					    			{ $$ = CalcExpr{$1, $3, "+"} }
 	| expr '-' expr					    			{ $$ = CalcExpr{$1, $3, "-"} }
-	| '-' expr 												{ $$ = CalcExpr{$2, nil, "Neg"} }
+	| '-' expr 												{ $$ = CalcExpr{$2, ASTLeaf{nil}, "Neg"} }
 	| expr '*' expr					    			{ $$ = CalcExpr{$1, $3, "*"} }
 	| expr '/' expr					    			{ $$ = CalcExpr{$1, $3, "/"} }
 	| expr '%' expr					    			{ $$ = CalcExpr{$1, $3, "%"} }
