@@ -94,7 +94,6 @@ type Lexer struct {
 	Tokens  [][]string
 	Pos     int
 	Started bool
-	Ended   bool
 }
 
 var mapStrToToken = map[string]int{
@@ -117,12 +116,7 @@ func (l *Lexer) Lex(lval *yySymType) int {
 	}
 
 	if l.Pos == len(l.Tokens) {
-		if l.Ended {
-			return 0
-		} else {
-			l.Ended = true
-			return 0
-		}
+		return 0
 	}
 
 	matchResult := l.Tokens[l.Pos]

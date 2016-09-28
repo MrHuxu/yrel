@@ -29,7 +29,9 @@ func main() {
 		"print a;\n" +
 		"} else {\n" +
 		"print b;\n" +
-		"}"
+		"}" +
+		"b = 3 + 1;\n" +
+		"print b;"
 	parser.YyParse(&parser.Lexer{S: input})
 	for _, stat := range parser.Statements {
 		stat.Execute()
