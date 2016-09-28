@@ -26,7 +26,7 @@ var Regs = make(map[string]lexer.Token)
 
 // any non-terminal which returns a value needs a type, which is
 // really a field name in the above union struct
-%type <AST> expr primary stat
+%type <AST> expr primary stat if_stmt
 
 // same for terminals
 %token <Number> NUMBER
@@ -52,6 +52,11 @@ list	:
 
 stat :
 		expr 														{ $$ = $1 }
+	| if_stmt													{ $$ = $1 }
+;
+
+if_stmt :
+		T_IF '(' expr ')' '{' expr '}'  { $$ = IfExpr{$3, $6, nil} }
 ;
 
 expr :

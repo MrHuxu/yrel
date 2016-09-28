@@ -62,9 +62,7 @@ type PrintExpr struct {
 func (p PrintExpr) Execute() ASTLeaf {
 	t := p.Right.Execute().Token
 	fmt.Println(t.GetText())
-	return ASTLeaf{
-		Token: t,
-	}
+	return ASTLeaf{Token: t}
 }
 
 type DefExpr struct {
@@ -78,7 +76,23 @@ func (d DefExpr) Execute() ASTLeaf {
 	value := d.Right.Execute().Token
 	Regs[name.GetText()] = value
 
-	return ASTLeaf{
-		Token: value,
+	return ASTLeaf{Token: value}
+}
+
+type IfExpr struct {
+	Condition ASTree
+	TrueCase  ASTree
+	FalseCase ASTree
+}
+
+func (i IfExpr) Execute() ASTLeaf {
+	if i.Condition.Execute().Token.True() {
+		return i.TrueCase.Execute()
+	} else {
+		if i.FalseCase != nil {
+			return i.FalseCase.Execute()
+		} else {
+			return ASTLeaf{lexer.Undefined}
+		}
 	}
 }
