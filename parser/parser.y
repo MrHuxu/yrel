@@ -20,6 +20,7 @@ var Statements []ASTree
 	Identifier lexer.IdToken
 	Number lexer.NumToken
 	Bool lexer.BoolToken
+	String lexer.StrToken
 	Operator string
 	StmtPrefix string
 	AST ASTree
@@ -35,6 +36,7 @@ var Statements []ASTree
 %token <Number> NUMBER
 %token <Identifier> IDENTIFIER
 %token <Bool> BOOL
+%token <String> STRING
 %token <Operator> T_EQUAL T_UNEQUAL T_LOGIC_AND T_LOGIC_OR
 %token <StmtPrefix> T_IF T_ELSE T_ELSIF T_WHILE T_PRINT
 
@@ -96,6 +98,7 @@ expr :
 primary :
 		NUMBER         { $$ = ASTLeaf{$1} }
 	| BOOL 					 { $$ = ASTLeaf{$1} }
+	| STRING				 { $$ = ASTLeaf{$1} }
 	| IDENTIFIER		 { $$ = IdExpr{$1} }
 ;
 
@@ -133,7 +136,14 @@ func (l *Lexer) Lex(lval *yySymType) int {
 
 	matchResult := l.Tokens[l.Pos]
 	l.Pos++
-	if matchResult[3] != "" {
+	if matchResult[2] != "" {
+		str := matchResult[2]
+		lval.String = lexer.StrToken{
+			Line:    &lexer.Line{l.Pos},
+			Literal: str[1 : len(str)-1],
+		}
+		return STRING
+	} else if matchResult[3] != "" {
 		lval.Bool = lexer.BoolToken{
 			Line:  &lexer.Line{l.Pos},
 			Value: matchResult[3] == "true",
