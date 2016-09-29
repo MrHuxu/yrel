@@ -24,7 +24,7 @@ func check(e error) {
 
 func main() {
 	fmt.Println("Yrel 0.0.1  Copyright (C) 2016-2018 xhu.me, Xu Hu")
-	var input = "print \"hello world\";\n" +
+	var input = "print \"hello world\n\" * 3;\n" +
 		"a = !true; b = false;\n" +
 		"if (3 > 1) {\n" +
 		"print a;\n" +

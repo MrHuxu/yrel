@@ -44,13 +44,12 @@ func (s StrToken) ExecCalc(str string, num int, op string) string {
 	case "Neg":
 		panic("unsupported operation")
 	case "*":
-		base := str
-		for num > 0 {
+		for num > -0 {
 			if num%2 == 1 {
-				result += base
+				result += str
 				num--
 			} else {
-				base += base
+				result += result
 				num >>= 1
 			}
 		}
