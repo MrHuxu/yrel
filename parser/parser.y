@@ -137,32 +137,32 @@ func (l *Lexer) Lex(lval *yySymType) int {
 
 	matchResult := Tokens[l.Pos]
 	l.Pos++
-	if matchResult[2] != "" {
-		str := matchResult[2]
+	if matchResult[3] != "" {
+		str := matchResult[3]
 		lval.String = lexer.StrToken{
 			Line:    &lexer.Line{l.Pos},
 			Literal: str[1 : len(str)-1],
 		}
 		return STRING
-	} else if matchResult[3] != "" {
+	} else if matchResult[4] != "" {
 		lval.Bool = lexer.BoolToken{
 			Line:  &lexer.Line{l.Pos},
-			Value: matchResult[3] == "true",
+			Value: matchResult[4] == "true",
 		}
 		return BOOL
-	} else if matchResult[4] != "" {
-		return mapStrToToken[matchResult[4]]
 	} else if matchResult[5] != "" {
-		num, _ := strconv.Atoi(matchResult[5])
+		return mapStrToToken[matchResult[5]]
+	} else if matchResult[6] != "" {
+		num, _ := strconv.Atoi(matchResult[6])
 		lval.Number = lexer.NumToken{
 			Line:  &lexer.Line{l.Pos},
 			Value: num,
 		}
 		return NUMBER
-	} else if matchResult[6] != "" {
+	} else if matchResult[7] != "" {
 		lval.Identifier = lexer.IdToken{
 			Line: &lexer.Line{l.Pos},
-			Text: matchResult[6],
+			Text: matchResult[7],
 		}
 		return IDENTIFIER
 	} else if matchResult[8] != "" {
