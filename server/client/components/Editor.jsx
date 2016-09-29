@@ -1,30 +1,44 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Radium, { Style } from 'radium';
 
+import { submitCode } from '../actions/EditorActions';
 import styles from '../styles/editor';
 
 @Radium
 class Editor extends Component {
   componentDidMount () {
-    CodeMirror(this.refs.editorElem, {   // eslint-disable-line
+    this.editor = CodeMirror(this.refs.editorElem, {   // eslint-disable-line
       lineNumbers : true,
       value       :
-`sum = 0
-i = 1
-while (i < 10) {
-  sum = sum + i
-  i = i + 1
+`print "hello world\\n" * 3;
+a = !true; b = false;
+
+if (3 > 1) {
+	print a;
+} else {
+	print b;
 }
 
-if (i % 2 == 0) {
-  even = even + 1
-} else {
-  odd = odd + 1
-}`,
+b = 3 + 1;
+print b;
+print a / 0;
+
+c = 4;
+c = c - 1;
+while (c > 0) {
+	print c;
+	c = c - 1;
+}
+print c;`,
       mode      : 'javascript',
       tabSize   : 2,
       autofocus : true
     });
+  }
+
+  _submit(e) {
+    this.props.dispatch(submitCode(this.editor.getValue()));
   }
 
   render () {
@@ -39,6 +53,7 @@ if (i % 2 == 0) {
         <div
           className = 'ui blue button'
           style = {styles.submitBtn}
+          onClick = {this._submit.bind(this)}
         >
           Submit
         </div>
@@ -47,4 +62,4 @@ if (i % 2 == 0) {
   }
 }
 
-export default Editor;
+export default connect()(Editor);

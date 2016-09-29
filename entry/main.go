@@ -24,7 +24,7 @@ func check(e error) {
 
 func main() {
 	fmt.Println("Yrel 0.0.1  Copyright (C) 2016-2018 xhu.me, Xu Hu")
-	var input = "print \"hello world\n\" * 3;\n" +
+	var str = "print \"hello world\n\" * 3;\n" +
 		"a = !true; b = false;\n" +
 		"if (3 > 1) {\n" +
 		"print a;\n" +
@@ -42,9 +42,12 @@ func main() {
 		"c = c - 1;\n" +
 		"}" +
 		"print c;"
-	parser.YyParse(&parser.Lexer{S: input})
+	parser.YyParse(&parser.Lexer{Input: str})
 	for _, stat := range parser.Statements {
 		stat.Execute()
+	}
+	for _, v := range parser.Outputs {
+		fmt.Println(v)
 	}
 	// fi := bufio.NewReader(os.NewFile(0, "stdin"))
 

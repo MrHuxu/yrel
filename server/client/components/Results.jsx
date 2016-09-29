@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import Tokens from './Tokens';
-import Expressions from './Expressions';
+import Lexer from './Lexer';
+import Parser from './Parser';
 import Output from './Output';
 import styles from '../styles/results';
 
@@ -10,10 +10,10 @@ class Results extends Component {
     return (
       <div>
         <div style = {styles.cardContainer}>
-          <Tokens />
+          <Lexer />
         </div>
         <div style = {styles.cardContainer}>
-          <Expressions />
+          <Parser />
         </div>
         <div style = {styles.cardContainer}>
           <Output />

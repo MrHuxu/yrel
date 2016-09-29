@@ -8,9 +8,6 @@ import (
 	"strconv"
 )
 
-var Regs = make(map[string]lexer.Token)
-var Statements []ASTree
-
 %}
 
 // fields inside this union end up as the fields in a structure known
@@ -104,9 +101,13 @@ primary :
 
 %%      /*  start  of  programs  */
 
+var Regs = make(map[string]lexer.Token)
+var Tokens [][]string
+var Statements []ASTree
+var Outputs []string
+
 type Lexer struct {
-	S       string
-	Tokens  [][]string
+	Input   string
 	Pos     int
 	Started bool
 }
@@ -122,19 +123,19 @@ var mapStrToToken = map[string]int{
 func (l *Lexer) Lex(lval *yySymType) int {
 	if !l.Started {
 		matcher := lexer.BuildLexerMatcher()
-		l.Tokens = matcher.FindAllStringSubmatch(l.S, -1)
+		Tokens = matcher.FindAllStringSubmatch(l.Input, -1)
 		l.Started = true
 	}
 
-	for l.Pos < len(l.Tokens) && (l.Tokens[l.Pos][0] == "" || l.Tokens[l.Pos][0] == "\n") {
+	for l.Pos < len(Tokens) && (Tokens[l.Pos][0] == "" || Tokens[l.Pos][0] == "\n") {
 		l.Pos++
 	}
 
-	if l.Pos == len(l.Tokens) {
+	if l.Pos == len(Tokens) {
 		return 0
 	}
 
-	matchResult := l.Tokens[l.Pos]
+	matchResult := Tokens[l.Pos]
 	l.Pos++
 	if matchResult[2] != "" {
 		str := matchResult[2]

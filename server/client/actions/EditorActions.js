@@ -1,104 +1,23 @@
-export const REFRESH_POSTS = 'REFRESH_POSTS';
-export function refreshPosts (posts) {
+export const REFRESH_RESULT = 'REFRESH_RESULT';
+export function refreshResult (result) {
   return {
-    type    : REFRESH_POSTS,
-    content : posts
+    type: REFRESH_RESULT,
+    content: result
   };
-}
+};
 
-export const CREATE_POST = 'CREATE_POST';
-export function createPost (newPost) {
-  return {
-    type    : CREATE_POST,
-    content : newPost
-  };
-}
-
-export const APPEND_POST = 'APPEND_POST';
-export function appendPost (newAppend) {
-  return {
-    type    : APPEND_POST,
-    content : newAppend
-  };
-}
-
-export const REPLY_POST = 'REPLY_POST';
-export function replyPost (newReply) {
-  return {
-    type    : REPLY_POST,
-    content : newReply
-  };
-}
-
-export function fetchPosts () {
+export function submitCode (code) {
   return function (dispatch) {
-    var request = new Request('/post/', {
-      method : 'GET'
-    });
-    fetch(request).then(res => {
-      return res.json();
-    }).then(json => {
-      if ('success' === json.result) {
-        dispatch(refreshPosts(json.posts));
-      }
-    });
-  };
-}
-
-export function createPostAjax (newTitle, newContent) {
-  return function (dispatch) {
-    var request = new Request('/post/create', {
+    var request = new Request('/yrel/', {
       method : 'POST',
-      body   : JSON.stringify({
-        title   : newTitle,
-        content : newContent
-      })
+      body   : code
     });
     fetch(request).then(res => {
       return res.json();
     }).then(json => {
       if ('success' === json.result) {
-        dispatch(createPost(json.newPost));
+        dispatch(refreshResult(json.content));
       }
-    });
-  };
-}
-
-export function appendPostAjax (postID, appendContent) {
-  return function (dispatch) {
-    var request = new Request('/post/append', {
-      method : 'POST',
-      body   : JSON.stringify({
-        postID : postID,
-        text   : appendContent
-      })
-    });
-    fetch(request).then(res => {
-      return res.json();
-    }).then(json => {
-      if ('success' === json.result) {
-        dispatch(appendPost(json.newAppend));
-      }
-    });
-  };
-}
-
-export function replyPostAjax (postID, replyContent) {
-  return function (dispatch) {
-    var request = new Request('/post/reply', {
-      method : 'POST',
-      body   : JSON.stringify({
-        postID  : postID,
-        text    : replyContent.text,
-        replyTo : replyContent.replyTo
-      })
-    });
-    fetch(request).then(res => {
-      return res.json();
-    }).then(json => {
-      if ('success' === json.result) {
-        dispatch(replyPost(json.newReply));
-      }
-    });
-  };
+    })
+  }
 }

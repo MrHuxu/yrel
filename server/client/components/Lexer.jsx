@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 
-class Tokens extends Component {
+class Lexer extends Component {
   render () {
     return (
       <div className = 'ui stacked segment'>
-        <h4 className = 'ui header'>Tokens</h4>
+        <h4 className = 'ui header'>Lexer</h4>
         <p>List all tokens here</p>
       </div>
     );
   }
 }
 
-export default Tokens;
+export default Lexer;
