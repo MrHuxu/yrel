@@ -38,15 +38,21 @@ func (s StrToken) ExecCalc(str string, num int, op string) string {
 	var result string
 	switch op {
 	case "+":
-		result = str + string(num)
+		result = str + strconv.Itoa(num)
 	case "-":
 		panic("unsupported operation")
 	case "Neg":
 		panic("unsupported operation")
 	case "*":
-		base := ""
-		for i := 0; i < num; i++ {
-			base = base + str
+		base := str
+		for num > 0 {
+			if num%2 == 1 {
+				result += base
+				num--
+			} else {
+				base += base
+				num >>= 1
+			}
 		}
 	case "/":
 		panic("unsupported operation")
