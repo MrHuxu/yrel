@@ -40,23 +40,17 @@ func (s StrToken) ExecCalc(str string, num int, op string) string {
 	case "+":
 		result = str + strconv.Itoa(num)
 	case "-":
-		panic("unsupported operation")
+		panic("Error: Unsupported operation.")
 	case "Neg":
-		panic("unsupported operation")
+		panic("Error: Unsupported operation.")
 	case "*":
-		for num > -0 {
-			if num%2 == 1 {
-				result += str
-				num--
-			} else {
-				result += result
-				num >>= 1
-			}
+		for ; num > 0; num-- {
+			result += str
 		}
 	case "/":
-		panic("unsupported operation")
+		panic("Error: Unsupported operation.")
 	case "%":
-		panic("unsupported operation")
+		panic("Error: Unsupported operation.")
 	}
 
 	return result
