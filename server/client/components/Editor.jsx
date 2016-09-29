@@ -37,7 +37,7 @@ print c;`,
     });
   }
 
-  _submit(e) {
+  _submit (e) {
     this.props.dispatch(submitCode(this.editor.getValue()));
   }
 

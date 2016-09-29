@@ -46,9 +46,10 @@ func main() {
 	for _, stat := range parser.Statements {
 		stat.Execute()
 	}
-	for _, v := range parser.Outputs {
-		fmt.Println(v)
-	}
+	fmt.Println(parser.Tokens, parser.Statements, parser.Outputs)
+	// for _, v := range parser.Outputs {
+	// 	fmt.Println(v)
+	// }
 	// fi := bufio.NewReader(os.NewFile(0, "stdin"))
 
 	// for {

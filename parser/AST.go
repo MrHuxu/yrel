@@ -61,7 +61,7 @@ type PrintExpr struct {
 
 func (p PrintExpr) Execute() ASTLeaf {
 	t := p.Right.Execute().Token
-	fmt.Println(t.GetText())
+	Outputs = append(Outputs, t.GetText())
 	return ASTLeaf{Token: t}
 }
 

@@ -1,8 +1,8 @@
 export const REFRESH_RESULT = 'REFRESH_RESULT';
 export function refreshResult (result) {
   return {
-    type: REFRESH_RESULT,
-    content: result
+    type    : REFRESH_RESULT,
+    content : result
   };
 };
 
@@ -15,9 +15,7 @@ export function submitCode (code) {
     fetch(request).then(res => {
       return res.json();
     }).then(json => {
-      if ('success' === json.result) {
-        dispatch(refreshResult(json.content));
-      }
-    })
-  }
+      dispatch(refreshResult(json));
+    });
+  };
 }

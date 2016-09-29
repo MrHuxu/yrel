@@ -1,10 +1,10 @@
 import thunkMiddleware from 'redux-thunk';
 import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
 
-import { editor } from './reducers/EditorReducer';
+import { result } from './reducers/ResultReducer';
 
 const rootReducer = combineReducers({
-  editor
+  result
 });
 
 export const rootStore = compose(

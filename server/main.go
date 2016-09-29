@@ -11,16 +11,31 @@ import (
 )
 
 func submitCode(c *gin.Context) {
-	str, err := ioutil.ReadAll(c.Request.Body)
+	parser.Tokens = parser.Tokens[:0]
+	parser.Statements = parser.Statements[:0]
+	parser.Outputs = parser.Outputs[:0]
+
+	bytes, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		fmt.Println(err)
+		c.JSON(200, gin.H{
+			"result":  "failure",
+			"content": map[string]interface{}{},
+		})
 	} else {
-		lexer := parser.Lexer{Input: string(str)}
+		lexer := parser.Lexer{Input: string(bytes)}
 		parser.YyParse(&lexer)
 		for _, stat := range parser.Statements {
 			stat.Execute()
 		}
-		fmt.Println(parser.Tokens, parser.Statements, parser.Outputs)
+		c.JSON(200, gin.H{
+			"result": "success",
+			"content": map[string]interface{}{
+				"tokens":     parser.Tokens,
+				"statements": parser.Statements,
+				"outputs":    parser.Outputs,
+			},
+		})
 	}
 }
 
