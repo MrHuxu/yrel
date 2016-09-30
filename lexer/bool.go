@@ -6,7 +6,7 @@ import (
 )
 
 type BoolToken struct {
-	*Line
+	Util
 	Value bool
 }
 
@@ -42,16 +42,10 @@ func (b BoolToken) getResultAndHandleError(result *NumToken, n BoolToken, num in
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Printf("%s ", r)
-			*result = NumToken{
-				Line:  n.Line,
-				Value: -1,
-			}
+			*result = NumToken{n.Util, -1}
 		}
 	}()
-	*result = NumToken{
-		Line:  n.Line,
-		Value: ExecCalc(0, num, op),
-	}
+	*result = NumToken{n.Util, ExecCalc(0, num, op)}
 }
 
 func (b BoolToken) Calc(t Token, op string) Token {
@@ -83,10 +77,7 @@ func (b BoolToken) Comp(t Token, op string) Token {
 		result = !b.Value
 	}
 
-	return BoolToken{
-		Line:  b.Line,
-		Value: result,
-	}
+	return BoolToken{b.Util, result}
 }
 
 func (b BoolToken) Logic(t Token, op string) Token {
@@ -98,8 +89,5 @@ func (b BoolToken) Logic(t Token, op string) Token {
 		result = b.Value || t.True()
 	}
 
-	return BoolToken{
-		Line:  b.Line,
-		Value: result,
-	}
+	return BoolToken{b.Util, result}
 }

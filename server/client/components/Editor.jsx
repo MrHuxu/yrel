@@ -14,6 +14,7 @@ class Editor extends Component {
 `print "hello world\\n" * 3;
 a = !true; b = false;
 
+// this is a comment
 if (3 > 1) {
 	print a;
 } else {

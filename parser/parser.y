@@ -102,82 +102,91 @@ primary :
 %%      /*  start  of  programs  */
 
 var Regs = make(map[string]lexer.Token)
-var Tokens [][]string
+var Tokens []lexer.Token
 var Statements []ASTree
 var Outputs []string
 
 type Lexer struct {
-	Input   string
-	Pos     int
-	Started bool
+	Input    string
+	ReResult [][]string
+	Line     int
+	Pos      int
+	Started  bool
 }
 
 var mapStrToToken = map[string]int{
-	"if"    : T_IF,
-	"else"  : T_ELSE,
-	"elsif" : T_ELSIF,
-	"while" :T_WHILE,
-	"print" :T_PRINT,
+	"if":    T_IF,
+	"else":  T_ELSE,
+	"elsif": T_ELSIF,
+	"while": T_WHILE,
+	"print": T_PRINT,
 }
 
 func (l *Lexer) Lex(lval *yySymType) int {
 	if !l.Started {
 		matcher := lexer.BuildLexerMatcher()
-		Tokens = matcher.FindAllStringSubmatch(l.Input, -1)
+		l.ReResult = matcher.FindAllStringSubmatch(l.Input, -1)
 		l.Started = true
+		l.Line = 1
 	}
 
-	for l.Pos < len(Tokens) && (Tokens[l.Pos][0] == "" || Tokens[l.Pos][0] == "\n") {
+	// jump over all empty and line break
+	for l.Pos < len(l.ReResult) && (l.ReResult[l.Pos][0] == "" || l.ReResult[l.Pos][0] == "\n") {
+		if l.ReResult[l.Pos][0] == "\n" {
+			l.Line++
+		}
 		l.Pos++
 	}
 
-	if l.Pos == len(Tokens) {
+	// till the end of the lex process, return 0
+	if l.Pos == len(l.ReResult) {
 		return 0
 	}
 
-	matchResult := Tokens[l.Pos]
+	matchResult := l.ReResult[l.Pos]
 	l.Pos++
-	if matchResult[3] != "" {
+	if matchResult[1] != "" {
+		Tokens = append(Tokens, lexer.IdToken{lexer.Util{l.Line, 1}, matchResult[1]})
+		l.Line++
+	} else if matchResult[3] != "" {
 		str := matchResult[3]
-		lval.String = lexer.StrToken{
-			Line:    &lexer.Line{l.Pos},
-			Literal: str[1 : len(str)-1],
-		}
+		lval.String = lexer.StrToken{lexer.Util{l.Line, 3}, str[1 : len(str)-1]}
+		Tokens = append(Tokens, lval.String)
 		return STRING
 	} else if matchResult[4] != "" {
-		lval.Bool = lexer.BoolToken{
-			Line:  &lexer.Line{l.Pos},
-			Value: matchResult[4] == "true",
-		}
+		lval.Bool = lexer.BoolToken{lexer.Util{l.Line, 4}, matchResult[4] == "true"}
+		Tokens = append(Tokens, lval.Bool)
 		return BOOL
 	} else if matchResult[5] != "" {
+		Tokens = append(Tokens, lexer.IdToken{lexer.Util{l.Line, 5}, matchResult[5]})
 		return mapStrToToken[matchResult[5]]
 	} else if matchResult[6] != "" {
 		num, _ := strconv.Atoi(matchResult[6])
-		lval.Number = lexer.NumToken{
-			Line:  &lexer.Line{l.Pos},
-			Value: num,
-		}
+		lval.Number = lexer.NumToken{lexer.Util{l.Line, 6}, num}
+		Tokens = append(Tokens, lval.Number)
 		return NUMBER
 	} else if matchResult[7] != "" {
-		lval.Identifier = lexer.IdToken{
-			Line: &lexer.Line{l.Pos},
-			Text: matchResult[7],
-		}
+		lval.Identifier = lexer.IdToken{lexer.Util{l.Line, 7}, matchResult[7]}
+		Tokens = append(Tokens, lval.Identifier)
 		return IDENTIFIER
 	} else if matchResult[8] != "" {
 		lval.Operator = "=="
+		Tokens = append(Tokens, lexer.IdToken{lexer.Util{l.Line, 8}, lval.Operator})
 		return T_EQUAL
 	} else if matchResult[9] != "" {
 		lval.Operator = "!="
+		Tokens = append(Tokens, lexer.IdToken{lexer.Util{l.Line, 9}, lval.Operator})
 		return T_UNEQUAL
 	} else if matchResult[10] != "" {
+		Tokens = append(Tokens, lexer.IdToken{lexer.Util{l.Line, 10}, matchResult[10]})
 		return int(matchResult[10][0])
 	} else if matchResult[11] != "" {
 		lval.Operator = "&&"
+		Tokens = append(Tokens, lexer.IdToken{lexer.Util{l.Line, 10}, lval.Operator})
 		return T_LOGIC_AND
 	} else if matchResult[12] != "" {
 		lval.Operator = "||"
+		Tokens = append(Tokens, lexer.IdToken{lexer.Util{l.Line, 10}, lval.Operator})
 		return T_LOGIC_OR
 	}
 
@@ -185,5 +194,5 @@ func (l *Lexer) Lex(lval *yySymType) int {
 }
 
 func (l *Lexer) Error(s string) {
-	fmt.Println("syntax error at position", l.Pos)
+	fmt.Println("syntax error at position", l.Line)
 }

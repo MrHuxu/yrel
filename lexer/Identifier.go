@@ -1,12 +1,12 @@
 package lexer
 
 type IdToken struct {
-	*Line
-	Text string
+	Util
+	Value string
 }
 
-var EOF = &IdToken{&Line{-1}, "EOF"}
-var Undefined = &IdToken{&Line{-1}, "Undefined"}
+var EOF = &IdToken{Util{-1, 7}, "EOF"}
+var Undefined = &IdToken{Util{-1, 7}, "Undefined"}
 
 func (i IdToken) IsNumber() bool {
 	return false
@@ -25,7 +25,7 @@ func (i IdToken) IsBool() bool {
 }
 
 func (i IdToken) GetText() string {
-	return i.Text
+	return i.Value
 }
 
 func (i IdToken) True() bool {
@@ -33,23 +33,13 @@ func (i IdToken) True() bool {
 }
 
 func (i IdToken) Calc(t Token, op string) Token {
-	return NumToken{
-		Line:  i.Line,
-		Value: 1,
-	}
+	return NumToken{i.Util, 1}
 }
 
 func (i IdToken) Comp(t Token, op string) Token {
-
-	return BoolToken{
-		Line:  i.Line,
-		Value: true,
-	}
+	return BoolToken{i.Util, true}
 }
 
 func (i IdToken) Logic(t Token, op string) Token {
-	return BoolToken{
-		Line:  i.Line,
-		Value: true,
-	}
+	return BoolToken{i.Util, true}
 }

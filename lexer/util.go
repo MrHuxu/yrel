@@ -6,11 +6,20 @@ import (
 	"strings"
 )
 
+type Util struct {
+	LineNum  int
+	Category int
+}
+
+func (u Util) GetLineNumber() int {
+	return u.LineNum
+}
+
 func BuildLexerMatcher() *regexp.Regexp {
 	patterns := []string{
-		`(//[\S\s]*\n)`,               // for comment
+		`(//[\S\s]*?\n)`,              // for comment
 		`(\n)`,                        // for line break
-		`(\"[\S\s]*\")`,               // for string
+		`(\"[\S\s]*?\")`,              // for string
 		`(true|false)`,                // for bool
 		`(if|else|elsif|while|print)`, // for built-in statement
 		`([0-9]+)`,                    // for number

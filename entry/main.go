@@ -26,6 +26,7 @@ func main() {
 	fmt.Println("Yrel 0.0.1  Copyright (C) 2016-2018 xhu.me, Xu Hu")
 	var str = "print \"hello world\n\" * 3;\n" +
 		"a = !true; b = false;\n" +
+		"// this is a comment\n" +
 		"if (3 > 1) {\n" +
 		"print a;\n" +
 		"print 5;\n" +
@@ -46,10 +47,9 @@ func main() {
 	for _, stat := range parser.Statements {
 		stat.Execute()
 	}
-	fmt.Println(parser.Tokens, parser.Statements, parser.Outputs)
-	// for _, v := range parser.Outputs {
-	// 	fmt.Println(v)
-	// }
+	for _, v := range parser.Outputs {
+		fmt.Println(v)
+	}
 	// fi := bufio.NewReader(os.NewFile(0, "stdin"))
 
 	// for {

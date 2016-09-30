@@ -6,8 +6,8 @@ import (
 )
 
 type StrToken struct {
-	*Line
-	Literal string
+	Util
+	Value string
 }
 
 func (s StrToken) IsNumber() bool {
@@ -27,7 +27,7 @@ func (s StrToken) IsBool() bool {
 }
 
 func (s StrToken) GetText() string {
-	return s.Literal
+	return s.Value
 }
 
 func (s StrToken) True() bool {
@@ -60,16 +60,10 @@ func (s StrToken) getResultAndHandleError(result *StrToken, num int, op string) 
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Printf("%s ", r)
-			*result = StrToken{
-				Line:    s.Line,
-				Literal: "-1",
-			}
+			*result = StrToken{s.Util, "-1"}
 		}
 	}()
-	*result = StrToken{
-		Line:    s.Line,
-		Literal: s.ExecCalc(s.Literal, num, op),
-	}
+	*result = StrToken{s.Util, s.ExecCalc(s.Value, num, op)}
 }
 
 func (s StrToken) Calc(t Token, op string) Token {
@@ -94,17 +88,14 @@ func (s StrToken) Comp(t Token, op string) Token {
 	case "<":
 		result = 0 < num
 	case "==":
-		result = s.Literal == t.GetText()
+		result = s.Value == t.GetText()
 	case "!=":
-		result = s.Literal != t.GetText()
+		result = s.Value != t.GetText()
 	case "!":
 		result = false
 	}
 
-	return BoolToken{
-		Line:  s.Line,
-		Value: result,
-	}
+	return BoolToken{s.Util, result}
 }
 
 func (s StrToken) Logic(t Token, op string) Token {
@@ -116,8 +107,5 @@ func (s StrToken) Logic(t Token, op string) Token {
 		result = true || t.True()
 	}
 
-	return BoolToken{
-		Line:  s.Line,
-		Value: result,
-	}
+	return BoolToken{s.Util, result}
 }
