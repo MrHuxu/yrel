@@ -31,7 +31,8 @@ class Parser extends Component {
         { data.length ? <JSONTree
           data = {data}
           theme = {theme}
-          shouldExpandNode = {() => true}
+          hideRoot
+          shouldExpandNode = {(keyName, data, level) => level <= 1}
         /> : <p>List all statements here</p> }
       </div>
     );
