@@ -11,34 +11,40 @@ class Editor extends Component {
     this.editor = CodeMirror(this.refs.editorElem, {   // eslint-disable-line
       lineNumbers : true,
       value       :
-`print "hello world\\n" * 3;
-a = !true; b = false;
+`greet = "hello yrel. ";
 
-// this is a comment
+// print statement, this line only contains a comment
+print greet;
+
+// print greet 3 times, and this is another comment
+print greet * 3;
+
+// if-else statement
 if (3 > 1) {
-	print a;
+  print "3 is larger than 1.";
 } else {
-	print b;
+  print "3 is smaller than 1.";
 }
 
-b = 3 + 1;
-print b;
-print a / 0;
-
-c = 4;
-c = c - 1;
-while (c > 0) {
-	print c;
-	c = c - 1;
+// use while statement to get the 10th fibnacci number
+a = 1;
+b = 1;
+count = 2;
+while (count < 10) {
+  tmp = b;
+  b = a + b;
+  a = tmp;
+  count = count + 1;
 }
-print c;`,
+print "the 10th fibonacci number is: " + b;`,
       mode      : 'javascript',
       tabSize   : 2,
       autofocus : true
     });
+    this._submit();
   }
 
-  _submit (e) {
+  _submit () {
     this.props.dispatch(submitCode(this.editor.getValue()));
   }
 

@@ -145,10 +145,16 @@ func (l *Lexer) Lex(lval *yySymType) int {
 
 	matchResult := l.ReResult[l.Pos]
 	l.Pos++
+
+	// jump over and collect all comments
 	if matchResult[1] != "" {
 		Tokens = append(Tokens, lexer.IdToken{lexer.Util{l.Line, 1}, matchResult[1]})
+		matchResult = l.ReResult[l.Pos]
+		l.Pos++
 		l.Line++
-	} else if matchResult[3] != "" {
+	}
+
+	if matchResult[3] != "" {
 		str := matchResult[3]
 		lval.String = lexer.StrToken{lexer.Util{l.Line, 3}, str[1 : len(str)-1]}
 		Tokens = append(Tokens, lval.String)

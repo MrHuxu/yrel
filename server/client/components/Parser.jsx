@@ -27,7 +27,10 @@ class Parser extends Component {
 
     return (
       <div className = 'ui stacked segment'>
-        <h4 className = 'ui header'>Parser</h4>
+        <h4 className = 'ui horizontal divider header'>
+          Parser
+        </h4>
+
         { data.length ? <JSONTree
           data = {data}
           theme = {theme}

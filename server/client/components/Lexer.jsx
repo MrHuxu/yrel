@@ -5,18 +5,42 @@ import styles from '../styles/lexer';
 class Lexer extends Component {
   render () {
     const { data } = this.props;
-    const colors = [null, 'red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'purple', 'pink', 'grey', 'brown', 'violet', 'black'];
+    const colors = [null, 'brown', 'orange', 'red', 'olive', 'green', 'teal', 'blue', 'purple', 'pink', 'grey', 'yellow', 'violet', 'black'];
+
+    var lines = {};
+    data.forEach((token) => {
+      if (!lines[token.LineNum])
+        lines[token.LineNum] = [token];
+      else
+        lines[token.LineNum].push(token);
+    });
+
     return (
       <div className = 'ui stacked segment'>
-        <h4 className = 'ui header'>Lexer</h4>
-        { data.length ? data.map(output => {
+        <h4 className = 'ui horizontal divider header'>
+          Lexer
+        </h4>
+
+        { data.length ? Object.keys(lines).map(line => {
           return (
-            <a
-              style = {styles.labelContainer}
-              className = {`ui ${colors[output.Category]} label`}
-            >
-              {output.Value}
-            </a>
+            <div>
+              <a
+                style = {styles.labelContainer}
+                className = 'ui basic circular small label'
+              >
+                {`#${line}`}
+              </a>
+              {lines[line].map(token => {
+                return (
+                  <a
+                    style = {styles.labelContainer}
+                    className = {`ui ${colors[token.Category]} label`}
+                  >
+                    {token.Value}
+                  </a>
+                );
+              })}
+            </div>
           );
         }) : <p>List all tokens here</p> }
       </div>
