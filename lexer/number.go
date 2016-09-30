@@ -7,7 +7,7 @@ import (
 
 type NumToken struct {
 	Util
-	Value int
+	Value int `json:"value"`
 }
 
 func (n NumToken) IsNumber() bool {

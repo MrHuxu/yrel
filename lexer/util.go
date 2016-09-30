@@ -7,8 +7,8 @@ import (
 )
 
 type Util struct {
-	LineNum  int
-	Category int
+	LineNum  int `json:"lineNum"`
+	Category int `json:"category"`
 }
 
 func (u Util) GetLineNumber() int {

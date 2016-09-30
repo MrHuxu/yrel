@@ -1,8 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import styles from '../styles/output';
 
 class Output extends Component {
+  static propTypes = {
+    data : PropTypes.arrayOf(PropTypes.string)
+  };
+
   render () {
     const { data } = this.props;
     return (
@@ -14,7 +18,16 @@ class Output extends Component {
           <i className = 'print icon' />
           Output
         </h4>
-        { data.length ? data.map(output => <div style = {styles.text}>{output}</div>) : <p>List all outputs here</p> }
+        { data.length ? data.map(output => {
+          return (
+            <div
+              key = {`output-${output}`}
+              style = {styles.text}
+            >
+              {output}
+            </div>
+          );
+        }) : <p>List all outputs here</p> }
       </div>
     );
   }

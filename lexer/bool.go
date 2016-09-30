@@ -7,7 +7,7 @@ import (
 
 type BoolToken struct {
 	Util
-	Value bool
+	Value bool `json:"value"`
 }
 
 func (b BoolToken) IsNumber() bool {

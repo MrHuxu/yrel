@@ -1,7 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import JSONTree from 'react-json-tree';
 
 class Parser extends Component {
+  static propTypes = {
+    data : PropTypes.arrayOf(PropTypes.object)
+  };
+
   render () {
     const { data } = this.props;
     const theme = {

@@ -2,7 +2,7 @@ package lexer
 
 type IdToken struct {
 	Util
-	Value string
+	Value string `json:"value"`
 }
 
 var EOF = &IdToken{Util{-1, 7}, "EOF"}

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Radium, { Style } from 'radium';
 
@@ -7,17 +7,22 @@ import styles from '../styles/editor';
 
 @Radium
 class Editor extends Component {
+  static propTypes = {
+    dispatch : PropTypes.func.isRequired
+  };
+
   componentDidMount () {
-    this.editor = CodeMirror(this.refs.editorElem, {   // eslint-disable-line
-      lineNumbers : true,
-      value       :
-`greet = "hello yrel. ";
+    var example = `greet = "hello yrel. ";
 
 // print statement, this line only contains a comment
 print greet;
 
 // print greet 3 times, and this is another comment
 print greet * 3;
+
+// bool is also supported
+boolVal = true;
+print boolVal;
 
 // if-else statement
 if (3 > 1) {
@@ -36,10 +41,14 @@ while (count < 10) {
   a = tmp;
   count = count + 1;
 }
-print "the 10th fibonacci number is: " + b;`,
-      mode      : 'javascript',
-      tabSize   : 2,
-      autofocus : true
+print "the 10th fibonacci number is: " + b;`;
+
+    this.editor = CodeMirror(this.refs.editorElem, {   // eslint-disable-line
+      lineNumbers : true,
+      value       : example,
+      mode        : 'javascript',
+      tabSize     : 2,
+      autofocus   : true
     });
     this._submit();
   }
