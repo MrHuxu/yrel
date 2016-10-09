@@ -101,10 +101,19 @@ primary :
 
 %%      /*  start  of  programs  */
 
-var Regs = make(map[string]lexer.Token)
-var Tokens []lexer.Token
-var Statements []ASTree
-var Outputs []string
+var (
+	Regs = make(map[string]lexer.Token)
+	Tokens []lexer.Token
+	Statements []ASTree
+	Outputs []string
+	mapStrToToken = map[string]int{
+		"if":    T_IF,
+		"else":  T_ELSE,
+		"elsif": T_ELSIF,
+		"while": T_WHILE,
+		"print": T_PRINT,
+	}
+)
 
 type Lexer struct {
 	Input    string
@@ -112,14 +121,6 @@ type Lexer struct {
 	Line     int
 	Pos      int
 	Started  bool
-}
-
-var mapStrToToken = map[string]int{
-	"if":    T_IF,
-	"else":  T_ELSE,
-	"elsif": T_ELSIF,
-	"while": T_WHILE,
-	"print": T_PRINT,
 }
 
 func (l *Lexer) Lex(lval *yySymType) int {
