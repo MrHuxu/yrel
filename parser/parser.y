@@ -131,9 +131,13 @@ func (l *Lexer) Lex(lval *yySymType) int {
 		l.Line = 1
 	}
 
-	// jump over all empty and line break
-	for l.Pos < len(l.ReResult) && (l.ReResult[l.Pos][0] == "" || l.ReResult[l.Pos][0] == "\n") {
+	// jump over all empty and line break and comment
+	for l.Pos < len(l.ReResult) && (l.ReResult[l.Pos][0] == "" || l.ReResult[l.Pos][0] == "\n" || l.ReResult[l.Pos][1] != "") {
 		if l.ReResult[l.Pos][0] == "\n" {
+			l.Line++
+		}
+		if l.ReResult[l.Pos][1] != "" {
+			Tokens = append(Tokens, lexer.IdToken{lexer.Util{l.Line, 1}, l.ReResult[l.Pos][1]})
 			l.Line++
 		}
 		l.Pos++
@@ -146,14 +150,6 @@ func (l *Lexer) Lex(lval *yySymType) int {
 
 	matchResult := l.ReResult[l.Pos]
 	l.Pos++
-
-	// jump over and collect all comments
-	if matchResult[1] != "" {
-		Tokens = append(Tokens, lexer.IdToken{lexer.Util{l.Line, 1}, matchResult[1]})
-		matchResult = l.ReResult[l.Pos]
-		l.Pos++
-		l.Line++
-	}
 
 	if matchResult[3] != "" {
 		str := matchResult[3]
