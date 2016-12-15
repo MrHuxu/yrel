@@ -37,9 +37,9 @@ class Results extends Component {
   }
 }
 
-var mapStateToProps = function (state) {
+var mapStateToProps = function ({ result }) {
   return {
-    content : state.result.content
+    content : result.content
   };
 };
 
