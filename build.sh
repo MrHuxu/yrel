@@ -4,4 +4,4 @@
 goyacc -o parser/parser.go parser/parser.y
 
 # change first letter to upper case for export the function
-sed -i '' "s/yyParse/YyParse/g" `grep yyParse parser/ -rl`
+sed -i -e "s/yyParse/YyParse/g" `grep yyParse parser/ -rl`
