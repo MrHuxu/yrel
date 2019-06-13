@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import { func } from 'prop-types';
 import { connect } from 'react-redux';
 import Radium, { Style } from 'radium';
 
@@ -8,7 +9,7 @@ import styles from '../styles/editor';
 @Radium
 class Editor extends Component {
   static propTypes = {
-    dispatch : PropTypes.func.isRequired
+    dispatch : func.isRequired
   };
 
   componentDidMount () {

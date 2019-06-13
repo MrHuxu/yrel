@@ -1,13 +1,14 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import { arrayOf, shape, number, any } from 'prop-types';
 
 import styles from '../styles/lexer';
 
 class Lexer extends Component {
   static propTypes = {
-    data : PropTypes.arrayOf(PropTypes.shape({
-      lineNum  : PropTypes.number.isRequired,
-      category : PropTypes.number.isRequired,
-      value    : PropTypes.any.isRequired
+    data : arrayOf(shape({
+      lineNum  : number.isRequired,
+      category : number.isRequired,
+      value    : any.isRequired
     }))
   };
 

@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import { shape, arrayOf, string, number, any, object } from 'prop-types';
 import { connect } from 'react-redux';
 
 import Lexer from './Lexer';
@@ -8,14 +9,14 @@ import styles from '../styles/results';
 
 class Results extends Component {
   static propTypes = {
-    content : PropTypes.shape({
-      outputs : PropTypes.arrayOf(PropTypes.string),
-      tokens  : PropTypes.arrayOf(PropTypes.shape({
-        lineNum  : PropTypes.number.isRequired,
-        category : PropTypes.number.isRequired,
-        value    : PropTypes.any.isRequired
+    content : shape({
+      outputs : arrayOf(string),
+      tokens  : arrayOf(shape({
+        lineNum  : number.isRequired,
+        category : number.isRequired,
+        value    : any.isRequired
       })),
-      statements : PropTypes.arrayOf(PropTypes.object)
+      statements : arrayOf(object)
     })
   };
 

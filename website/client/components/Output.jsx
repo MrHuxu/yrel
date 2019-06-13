@@ -1,10 +1,11 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import { arrayOf, string } from 'prop-types';
 
 import styles from '../styles/output';
 
 class Output extends Component {
   static propTypes = {
-    data : PropTypes.arrayOf(PropTypes.string)
+    data : arrayOf(string)
   };
 
   render () {
