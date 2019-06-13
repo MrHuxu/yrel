@@ -1,12 +1,11 @@
-server/node_modules/
-server/log/
-server/npm-debug.log
-server/dump.rdb
+website/node_modules/
+website/log/
+website/npm-debug.log
+website/dump.rdb
 
-server/logfile.log
-server/built/
-server/main
+website/logfile.log
+website/built/
+website/main
 
 y.output
 parser/y.output
-parser/parser.go
