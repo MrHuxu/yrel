@@ -14,6 +14,7 @@ RUN ./node_modules/webpack/bin/webpack.js --config webpack.config.prd.js
 FROM golang:latest AS go-builder
 
 ENV GO111MODULE on
+ENV GOPROXY https://goproxy.io
 ENV CGO_ENABLED 0
 
 WORKDIR /work
