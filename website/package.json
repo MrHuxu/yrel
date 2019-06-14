@@ -1,7 +1,6 @@
 {
-  "name": "blog-redesign",
+  "name": "yrel",
   "version": "0.0.1",
-  "private": true,
   "scripts": {
     "start": "node ./bin/www",
     "test": "./node_modules/mocha/bin/mocha --compilers js:babel-register",
@@ -41,7 +40,8 @@
     "style-loader": "^0.23.1",
     "styled-components": "^4.3.1",
     "url-loader": "^2.0.0",
-    "webpack": "^4.34.0"
+    "webpack": "^4.34.0",
+    "webpack-cli": "^3.3.4"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
@@ -58,7 +58,6 @@
     "eslint-plugin-react": "^7.13.0",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-watch": "^5.1.2",
-    "webpack-cli": "^3.3.4",
     "webpack-dev-server": "^3.7.1"
   }
 }

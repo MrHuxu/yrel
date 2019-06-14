@@ -1,6 +1,8 @@
 const { optimize, NoEmitOnErrorsPlugin } = require('webpack');
 
 module.exports = {
+  mode : 'development',
+
   entry : [
     'webpack-dev-server/client?http://localhost:6789', // WebpackDevServer host and port
     'webpack/hot/dev-server', // "only" prevents reload on syntax errors

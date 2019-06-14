@@ -1,5 +1,7 @@
 FROM node:11.15.0 AS node-builder
 
+ENV NODE_ENV production
+
 WORKDIR /work
 COPY ./client /work/client
 COPY ./package.json /work/
@@ -14,10 +16,10 @@ FROM golang:latest AS go-builder
 ENV GO111MODULE on
 ENV CGO_ENABLED 0
 
-WORKDIR /go/src/github.com/MrHuxu/yrel/website
-COPY ./main.go /go/src/github.com/MrHuxu/yrel/website/
-COPY ./go.mod /go/src/github.com/MrHuxu/yrel/website/
-COPY ./go.sum /go/src/github.com/MrHuxu/yrel/website/
+WORKDIR /work
+COPY ./main.go /work/
+COPY ./go.mod /work/
+COPY ./go.sum /work/
 
 RUN go mod download
 RUN go build main.go
@@ -30,7 +32,7 @@ ENV INSIDE_DOCKER true
 WORKDIR /output
 COPY ./templates /output/templates
 COPY --from=node-builder /work/built/bundle.js /output/built/
-COPY --from=go-builder /go/src/github.com/MrHuxu/yrel/website/main /output/
+COPY --from=go-builder /work/main /output/
 
 EXPOSE 8082
 ENTRYPOINT [ "./main" ]

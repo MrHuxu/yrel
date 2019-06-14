@@ -2,6 +2,8 @@ const { resolve } = require('path');
 const { optimize, NoEmitOnErrorsPlugin } = require('webpack');
 
 module.exports = {
+  mode : 'production',
+
   entry : './client/index',
 
   output : {
