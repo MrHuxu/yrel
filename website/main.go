@@ -45,7 +45,7 @@ func main() {
 
 	// init router
 	var router *gin.Engine
-	if "Production" == os.Getenv("ENV") {
+	if "release" == os.Getenv("GIN_MODE") {
 		logFile, err := os.OpenFile("logfile.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 		if err != nil {
 			fmt.Println("error opening log file")
@@ -53,7 +53,6 @@ func main() {
 		defer logFile.Close()
 
 		gin.DefaultWriter = io.Writer(logFile)
-		gin.SetMode(gin.ReleaseMode)
 
 		router = gin.New()
 		router.Use(gin.Logger())
@@ -67,7 +66,7 @@ func main() {
 	// setup routers
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"prd":   "Production" == os.Getenv("ENV"),
+			"prd":   "release" == os.Getenv("GIN_MODE"),
 			"title": "Yrel",
 		})
 	})
