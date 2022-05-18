@@ -1,4 +1,4 @@
-FROM node:11.15.0 AS node-builder
+FROM node:11.15.0-alpine AS node-builder
 
 ENV NODE_ENV production
 
@@ -11,7 +11,7 @@ COPY ./webpack.config.prd.js /work/
 RUN npm install
 RUN ./node_modules/webpack/bin/webpack.js --config webpack.config.prd.js
 
-FROM golang:latest AS go-builder
+FROM golang:alpine AS go-builder
 
 ENV GO111MODULE on
 ENV GOPROXY https://goproxy.io
