@@ -9,6 +9,9 @@ on:
 jobs:
   Deploy-Production:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [11.*]
     steps:
       - uses: actions/checkout@v2
       - name: Install Vercel CLI
