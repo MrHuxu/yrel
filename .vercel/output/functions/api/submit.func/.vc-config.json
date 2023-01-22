@@ -1,6 +1,0 @@
-{
-  "handler": "handler",
-  "runtime": "go1.x",
-  "environment": {},
-  "supportsWrapper": true
-}
