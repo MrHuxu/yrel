@@ -11,6 +11,10 @@ import (
 
 // Submit ...
 func Submit(w http.ResponseWriter, r *http.Request) {
+	parser.Tokens = parser.Tokens[:0]
+	parser.Statements = parser.Statements[:0]
+	parser.Outputs = parser.Outputs[:0]
+
 	bytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Fatal(err)
