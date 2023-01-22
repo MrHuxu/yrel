@@ -1,0 +1,39 @@
+<html>
+
+<head>
+  <title>{{ .title }}</title>
+  <link rel="shortcut icon" href="https://img.xhu.me/yrel/favicon.png">
+  <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-10-y/semantic-ui/2.2.4/semantic.min.css" type="text/css"
+    rel="stylesheet" />
+  <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-10-y/codemirror/5.18.2/codemirror.min.css" type="text/css"
+    rel="stylesheet" />
+  <link href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-10-y/highlight.js/9.6.0/styles/school-book.min.css"
+    type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+  <div id="yrel"></div>
+
+  <a href="https://github.com/MrHuxu/yrel" target="_blank">
+    <img style="position: fixed; top: 0; right: 0; border: 0; z-index: 901"
+      src="https://img.xhu.me/yrel/forkme_right_gray.png" alt="Fork me on GitHub"
+      data-canonical-src="https://img.xhu.me/yrel/forkme_right_gray.png">
+  </a>
+
+  <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-10-y/jquery/3.1.0/jquery.min.js"
+    type="application/javascript"></script>
+  <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-10-y/semantic-ui/2.2.4/semantic.min.js"
+    type="application/javascript"></script>
+  <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-10-y/codemirror/5.18.2/codemirror.min.js"
+    type="application/javascript"></script>
+  <script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-10-y/codemirror/5.18.2/mode/javascript/javascript.min.js"
+    type="application/javascript"></script>
+
+  {{ if .prd }}
+  <script src="/built/bundle.js"></script>
+  {{ else }}
+  <script src='http://localhost:6789/assets/bundle.js'></script>
+  {{ end }}
+</body>
+
+</html>
