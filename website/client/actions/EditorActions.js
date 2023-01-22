@@ -8,7 +8,7 @@ export function refreshResult (result) {
 
 export function submitCode (code) {
   return function (dispatch) {
-    var request = new Request('/yrel/', {
+    var request = new Request('/submit', {
       method : 'POST',
       body   : code
     });

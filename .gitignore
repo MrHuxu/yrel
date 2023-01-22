@@ -5,6 +5,7 @@ website/node_modules/
 website/log/
 website/npm-debug.log
 website/dump.rdb
+website/.vercel
 
 website/logfile.log
 website/built/
