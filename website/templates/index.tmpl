@@ -1,6 +1,7 @@
 <html>
 
 <head>
+  <meta charset="UTF-8">
   <title>{{ .title }}</title>
   <link rel="shortcut icon" href="https://img.xhu.me/yrel/favicon.png">
   <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-10-y/semantic-ui/2.2.4/semantic.min.css" type="text/css"
@@ -30,7 +31,7 @@
     type="application/javascript"></script>
 
   {{ if .prd }}
-  <script src="/bundle.js"></script>
+  <script src="/built/bundle.js"></script>
   {{ else }}
   <script src='http://localhost:6789/assets/bundle.js'></script>
   {{ end }}

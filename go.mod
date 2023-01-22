@@ -1,11 +1,15 @@
-module github.com/MrHuxu/yrel/website
+module github.com/MrHuxu/yrel
 
 go 1.18
 
 require (
-	github.com/MrHuxu/yrel v0.0.0-20190613132351-5e4141da7eed // indirect
+	github.com/gin-gonic/gin v1.7.7
+	github.com/vercel/go-bridge v0.0.0-20221108222652-296f4c6bdb6d
+)
+
+require (
+	github.com/aws/aws-lambda-go v1.37.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-gonic/gin v1.7.7 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect

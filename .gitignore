@@ -1,3 +1,6 @@
+.vscode
+*/.vscode
+
 website/node_modules/
 website/log/
 website/npm-debug.log
@@ -9,3 +12,5 @@ website/main
 
 y.output
 parser/y.output
+
+.vercel

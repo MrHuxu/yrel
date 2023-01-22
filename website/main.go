@@ -1,4 +1,4 @@
-package main
+package website
 
 import (
 	"fmt"
@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/MrHuxu/yrel/parser"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,7 +20,7 @@ func submitCode(c *gin.Context) {
 	bytes, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		fmt.Println(err)
-		c.JSON(200, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"result":  "failure",
 			"content": map[string]interface{}{},
 		})
@@ -29,7 +30,7 @@ func submitCode(c *gin.Context) {
 		for _, stat := range parser.Statements {
 			stat.Execute()
 		}
-		c.JSON(200, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"result": "success",
 			"content": map[string]interface{}{
 				"tokens":     parser.Tokens,
@@ -56,7 +57,7 @@ func main() {
 
 		router = gin.New()
 		router.Use(gin.Logger())
-		router.StaticFile("./bundle.js", "./built/bundle.js")
+		router.StaticFile("./built/bundle.js", "./built/bundle.js")
 	} else {
 		gin.SetMode(gin.DebugMode)
 		router = gin.New()
@@ -70,11 +71,7 @@ func main() {
 			"title": "Yrel",
 		})
 	})
-
-	routes := router.Group("/yrel")
-	{
-		routes.POST("/", submitCode)
-	}
+	router.POST("/submit", submitCode)
 
 	router.Run(":8082")
 }
