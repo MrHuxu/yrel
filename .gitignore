@@ -1,3 +1,6 @@
+.vscode
+*/.vscode
+
 website/node_modules/
 website/log/
 website/npm-debug.log
