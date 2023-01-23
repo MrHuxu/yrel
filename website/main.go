@@ -1,4 +1,4 @@
-package website
+package main
 
 import (
 	"fmt"
@@ -72,6 +72,8 @@ func main() {
 		})
 	})
 	router.POST("/submit", submitCode)
+
+	router.Static("/website/client/assets", "./client/assets")
 
 	router.Run(":8082")
 }
